@@ -1,1 +1,2 @@
+colorama
 Django==2.2.10
