@@ -231,6 +231,7 @@ class TableData(ModelFields):
     table = TableData(models)
     xiuzheng = {'替换内容1':'替换为1', '替换内容2':'替换为2'}
     r = table.set_title(self.headers_title, **xiuzheng)
+    print(table.exclude_info)
     if r:
         raise ValueError(f'字段没有导入：{r}')
     # print(r, table.table_fields, table.index_list)
@@ -244,6 +245,7 @@ class TableData(ModelFields):
         self.index_list = None
         # Excel列数据对应数据库的字段名
         self.table_fields = None
+        self.exclude_info = []
 
     def set_title(self, row, exclude=None, **kwargs):
         """
@@ -264,14 +266,19 @@ class TableData(ModelFields):
         index_list = []
         table_fields = []
         ret = []
+        self.exclude_info = []
         for i, name in enumerate(row):
+            if name in exclude:
+                self.exclude_info.append(name)
+                continue
             field = self.verbose_to_field(name)
             if field:
                 # print(field)
-                index_list.append(i)
-                table_fields.append(field)
-            elif name in exclude:
-                continue
+                if name in exclude:
+                    self.exclude_info.append(name)
+                else:
+                    index_list.append(i)
+                    table_fields.append(field)
             elif name in kwargs and self.verbose_to_field(kwargs[name]):
                 # print(self.verbose_to_field(kwargs[name]))
                 index_list.append(i)

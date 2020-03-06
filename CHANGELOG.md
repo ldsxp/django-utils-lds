@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.4] - 2020-03-06
+### Changed
+- TableData 设置标题的时候排除字段和字段名字
+
 ## [0.0.3] - 2020-03-06
 ### Changed
 - 修改TableData中的属性名字
