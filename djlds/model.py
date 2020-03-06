@@ -1,17 +1,17 @@
-﻿# ---------------------------------------
+# ---------------------------------------
 #   程序：model.py
-#   版本：0.1
+#   版本：0.2
 #   作者：lds
-#   日期：2020-02-27
+#   日期：2020-03-06
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
 
 import operator
 from functools import reduce
-from collections import OrderedDict
+# from collections import OrderedDict
 
-from django.forms.models import model_to_dict  # 获取模型实例的字典
+# from django.forms.models import model_to_dict  # 获取模型实例的字典
 from django.db.models.base import ModelBase, Model
 from django.conf import settings
 
@@ -233,54 +233,73 @@ class TableData(ModelFields):
     r = table.set_title(self.headers_title, **xiuzheng)
     if r:
         raise ValueError(f'字段没有导入：{r}')
-    # print(r, table._fields, table._rows)
+    # print(r, table.table_fields, table.index_list)
     """
 
     def __init__(self, model, exclude=None):
         super().__init__(model, exclude)
+        # 标题
         self.title = None
-        self._rows = None
-        self._fields = None
+        # Excel列数据对应数据库字段的索引
+        self.index_list = None
+        # Excel列数据对应数据库的字段名
+        self.table_fields = None
 
-    def set_title(self, title, exclude=None, **kwargs):
+    def set_title(self, row, exclude=None, **kwargs):
         """
         设置标题行内容
 
         我们通过标题行对应的列索引获取数据
+
+        :param row: 标题行内容
+        :param exclude: 排除的内容
+        :param kwargs: 用来修正数据，数据库的表述和列表标题不同的时候使用
+        :return:
         """
-        if not isinstance(title, list):
-            raise ValueError('title 参数需要是列表类型！')
+        if not isinstance(row, list):
+            raise ValueError('Excel行是列表类型！')
         if exclude is None:
             exclude = []
 
-        rows = []
-        fields = []
+        index_list = []
+        table_fields = []
         ret = []
-        for i, name in enumerate(title):
+        for i, name in enumerate(row):
             field = self.verbose_to_field(name)
             if field:
                 # print(field)
-                rows.append(i)
-                fields.append(field)
+                index_list.append(i)
+                table_fields.append(field)
             elif name in exclude:
                 continue
             elif name in kwargs and self.verbose_to_field(kwargs[name]):
                 # print(self.verbose_to_field(kwargs[name]))
-                rows.append(i)
-                fields.append(self.verbose_to_field(kwargs[name]))
+                index_list.append(i)
+                table_fields.append(self.verbose_to_field(kwargs[name]))
             else:
                 ret.append(name)
 
-        self.title = title
-        self._rows = rows
-        self._fields = fields
-        self.count = len(fields)
+        self.title = row
+        self.index_list = index_list
+        self.table_fields = table_fields
+        self.count = len(table_fields)
 
         return ret
 
-    def get_model_data(self, lines):
-        """获取 Django 模型使用的字典数据"""
-        return {field: lines[self._rows[i]] for i, field in enumerate(self._fields)}
+    def row_to_dict(self, row):
+        """
+        获取 Django 模型使用的字典数据
+
+        :param row: Excel行
+        :return: model_dict
+        """
+        return {field: row[self.index_list[i]] for i, field in enumerate(self.table_fields)}
+
+    def get_model_data(self, row):
+        """
+        获取 Django 模型使用的字典数据
+        """
+        return self.row_to_dict(row)
 
 
 def get_field_file_path(field_file):
