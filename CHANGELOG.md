@@ -4,6 +4,11 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.5] - 2020-03-17
+### Changed
+- 优化导入函数 ModelData
+- 导入 csv 支持分批和转换内容
+
 ## [0.0.4] - 2020-03-06
 ### Changed
 - TableData 设置标题的时候排除字段和字段名字

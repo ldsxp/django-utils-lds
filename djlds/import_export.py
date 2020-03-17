@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.1
+#   版本：0.2
 #   作者：lds
-#   日期：2020-02-27
+#   日期：2020-03-17
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -112,11 +112,18 @@ class ModelData:
         return import_data
 
 
-def import_csv(model, csv_file, encoding='utf-8'):
+def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000):
     """
-    导入csv文件到数据库
+    导入 csv 文件到数据库
 
     注意：需要处理日期和文件名的不要用她导入，她只用于备份和恢复。
+
+    :param model: 要导出的数据库模型
+    :param csv_file: 保存文件
+    :param encoding: 保存文件编码
+    :param conversion_type: 转换字段数据内容
+    :param max_batch: 一次最大导入数量，超过以后分批导入
+    :return:
     """
 
     print('导入开始 ---------------------------------------------------------\n', csv_file)
@@ -124,19 +131,31 @@ def import_csv(model, csv_file, encoding='utf-8'):
     # 读取csv文件
     with open(csv_file, newline='', encoding=encoding) as f:
         reader = csv.reader(f)
+        import_count = 0
+        batch_count = 0
+        load_list = []
+
         try:
-            load_list = []
             iter_reader = iter(reader)
             export = ModelData(model, next(iter_reader))
+            # 如果需要转换类型
+            if isinstance(conversion_type, dict):
+                export.conversion_type = conversion_type
             for row in iter_reader:
                 # print(ku_field, xls_row, row)
                 kwargs = export.get_import_data(row)
                 # print(kwargs)
                 load_list.append(model(**kwargs))
+                batch_count += 1
+                if batch_count == max_batch:
+                    import_count += len(model.objects.bulk_create(load_list))
+                    batch_count = 0
+                    load_list = []
         except csv.Error as e:
             return f'file {csv_file}, line {reader.line_num}: {e}'
         else:
-            info = '成功导入 %s 行' % len(model.objects.bulk_create(load_list))
+            import_count += len(model.objects.bulk_create(load_list))
+            info = '成功导入 %s 行' % import_count
             print(info)
             print('---------------------------------------------------------')
             return info
