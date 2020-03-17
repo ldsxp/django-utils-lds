@@ -102,17 +102,12 @@ class ModelData:
         """
         import_data = {}
 
-        for i in range(len(self.import_index)):
-            field = self.import_fields[i]
-            index = self.import_index[i]
-            val = row[index]
-            if not val:
-                continue
-            if field in self.conversion_type:
-                # print('转换类型', self.conversion_type[field], val)
-                val = self.conversion_type[field](val)
+        for index, field in zip(self.import_index, self.import_fields):
+            import_data[field] = row[index]
 
-            import_data[field] = val
+        for field, func in self.conversion_type.items():
+            # print('转换类型', self.conversion_type[field], val)
+            import_data[field] = func(import_data[field])
 
         return import_data
 
