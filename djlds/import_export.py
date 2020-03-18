@@ -105,8 +105,10 @@ class LdsExportCsv:
         self.gequ_dict = {}
 
         # 设置排除内容
-        if exclude is None:
+        if exclude is None or not isinstance(exclude, list):
             self.exclude = ['denglushijian_date']  # 'id',
+        else:
+            self.exclude = exclude
 
         self.f = ModelFields(model, self.exclude)
 
