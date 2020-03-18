@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.2
+#   版本：0.3
 #   作者：lds
-#   日期：2020-03-17
+#   日期：2020-03-18
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -12,104 +12,7 @@ import csv
 # 获取模型实例的字典
 from django.forms.models import model_to_dict
 
-from djlds.model import ModelFields, get_field_file_path
-
-
-class ModelData:
-    """
-    根据 django 模型转换导入数据
-    """
-
-    # 获取字段类型，处理一部分类型
-    WIDGETS_MAP = {
-        # 'ManyToManyField': 'get_m2m_widget',
-        # 'OneToOneField': 'get_fk_widget',
-        # 'ForeignKey': 'get_fk_widget',
-        # 'DecimalField': widgets.DecimalWidget,
-        # 'DateTimeField': widgets.DateTimeWidget,
-        # 'DateField': widgets.DateWidget,
-        # 'TimeField': widgets.TimeWidget,
-        # 'DurationField': widgets.DurationWidget,
-        # 'FloatField': float,
-        # 'IntegerField': widgets.IntegerWidget,
-        # 'PositiveIntegerField': widgets.IntegerWidget,
-        # 'BigIntegerField': widgets.IntegerWidget,
-        # 'PositiveSmallIntegerField': widgets.IntegerWidget,
-        # 'SmallIntegerField': widgets.IntegerWidget,
-        # 'AutoField': widgets.IntegerWidget,
-        # 'NullBooleanField': widgets.BooleanWidget,
-        # 'BooleanField': widgets.BooleanWidget,
-    }
-
-    def __init__(self, model, row, import_names=None, exclude=None):
-
-        # 需要转换的 id 然后批量转换
-        # 如果有需要 再添加
-
-        # print(filed)
-
-        if exclude is None:
-            exclude = []
-
-        self.model = model
-        self.import_fields = []
-        self.import_index = []
-        self.conversion_type = {}
-
-        names = {}
-        verbose_names = {}
-        if import_names is None:
-            import_names = {}
-
-        for f in model._meta.fields:
-            # print('处理不同字段内容', isinstance(f, models.BooleanField))
-            # print('获取模型的字段名', f.get_internal_type())
-            internal_type = f.get_internal_type() if callable(getattr(f, "get_internal_type", None)) else ""
-            # print(internal_type, f.verbose_name, f.name)
-            names[f.name] = {'name': f.name, 'internal_type': internal_type}
-            verbose_names[f.verbose_name] = {'name': f.name, 'internal_type': internal_type}
-
-        for i, field in enumerate(row):
-            # 排除的内容
-            if field in exclude:
-                continue
-
-            # 重命名的内容
-            if field in import_names:
-                field = import_names[field]
-
-            # 字段名导入
-            if field in names:
-                self.import_fields.append(names[field]['name'])
-                self.import_index.append(i)
-                if names[field]['internal_type'] in self.WIDGETS_MAP:
-                    self.conversion_type[names[field]['name']] = self.WIDGETS_MAP[names[field]['internal_type']]
-            # 按名字导入
-            elif field in verbose_names:
-                self.import_fields.append(verbose_names[field]['name'])
-                self.import_index.append(i)
-                if verbose_names[field]['internal_type'] in self.WIDGETS_MAP:
-                    self.conversion_type[verbose_names[field]['name']] = self.WIDGETS_MAP[
-                        verbose_names[field]['internal_type']]
-            # 没有导入的内容
-            else:
-                # pass
-                # print('导入失败：-------------------表头 %s %s 应该为 %s 。-------------------' % (i + 1, field, now_0[i]))
-                raise RuntimeError('导入失败：row[%s]：%s 不能导入数据库。' % (i + 1, field))
-
-    def get_import_data(self, row):
-        """
-        """
-        import_data = {}
-
-        for index, field in zip(self.import_index, self.import_fields):
-            import_data[field] = row[index]
-
-        for field, func in self.conversion_type.items():
-            # print('转换类型', self.conversion_type[field], val)
-            import_data[field] = func(import_data[field])
-
-        return import_data
+from djlds.model import ModelFields, get_field_file_path, ModelData
 
 
 def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000):

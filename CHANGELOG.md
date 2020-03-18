@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.6] - 2020-03-18
+### Changed
+- import_export.ModelData 移动到 model.ModelData
+
 ## [0.0.5] - 2020-03-17
 ### Changed
 - 优化导入函数 ModelData
