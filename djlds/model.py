@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.3
+#   版本：0.4
 #   作者：lds
-#   日期：2020-03-18
+#   日期：2020-03-20
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -16,13 +16,14 @@ from django.db.models.base import ModelBase, Model
 from django.conf import settings
 
 from django.apps import apps
+from django.db import models
 # group_by 这个分组 我喜欢
 from django.db.models import Count
 from django.db.models import QuerySet
 # # from django.db.models import FileField
 from django.db.models import Sum
 
-from django.db import models
+from djlds.xlsx_util import xl_col_to_name
 
 """
 20181203 添加 搜索多个字段的函数
@@ -265,7 +266,7 @@ class TableData(ModelFields):
 
         index_list = []
         table_fields = []
-        ret = []
+        cannot_import = []
         self.exclude_info = []
         for i, name in enumerate(row):
             if name in exclude:
@@ -284,14 +285,14 @@ class TableData(ModelFields):
                 index_list.append(i)
                 table_fields.append(self.verbose_to_field(kwargs[name]))
             else:
-                ret.append(name)
+                cannot_import.append({'Column': xl_col_to_name(i), 'Name': name})
 
         self.title = row
         self.index_list = index_list
         self.table_fields = table_fields
         self.count = len(table_fields)
 
-        return ret
+        return cannot_import
 
     def row_to_dict(self, row):
         """
