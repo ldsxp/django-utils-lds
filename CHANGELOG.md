@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.8] - 2020-03-23
+### Changed
+- model.TableData 添加检查是否有重复字段
+
 ## [0.0.7] - 2020-03-20
 ### Changed
 - model.TableData 不能导入的时候提示更详细信息

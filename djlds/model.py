@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.4
+#   版本：0.8
 #   作者：lds
-#   日期：2020-03-20
+#   日期：2020-03-23
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -291,6 +291,10 @@ class TableData(ModelFields):
         self.index_list = index_list
         self.table_fields = table_fields
         self.count = len(table_fields)
+
+        # 检查是否有重复字段
+        if self.count != len(set(self.table_fields)):
+            raise ValueError(f'发现 {self.count - len(set(self.table_fields))} 个重复字段')
 
         return cannot_import
 
