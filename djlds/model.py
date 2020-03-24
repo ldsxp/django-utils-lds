@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.8
+#   版本：0.9
 #   作者：lds
-#   日期：2020-03-23
+#   日期：2020-03-24
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -247,6 +247,7 @@ class TableData(ModelFields):
         # Excel列数据对应数据库的字段名
         self.table_fields = None
         self.exclude_info = []
+        self.duplicate_info = {}
 
     def set_title(self, row, exclude=None, **kwargs):
         """
@@ -294,7 +295,16 @@ class TableData(ModelFields):
 
         # 检查是否有重复字段
         if self.count != len(set(self.table_fields)):
-            raise ValueError(f'发现 {self.count - len(set(self.table_fields))} 个重复字段')
+            check_duplicates = {}
+            for i, field in enumerate(self.table_fields):
+                if field in check_duplicates:
+                    if field not in self.duplicate_info:
+                        self.duplicate_info[field] = [{'Column': xl_col_to_name(check_duplicates[field]),
+                                                       'Name': self.title[check_duplicates[field]]}]
+                    self.duplicate_info[field].append(
+                        {'Column': xl_col_to_name(self.index_list[i]), 'Name': self.title[self.index_list[i]]})
+                else:
+                    check_duplicates[field] = self.index_list[i]
 
         return cannot_import
 
