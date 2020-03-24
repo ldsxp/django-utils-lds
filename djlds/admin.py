@@ -65,7 +65,7 @@ class ExportCsvMixin:
             else:
                 field_verbose_name.append(field.verbose_name)
 
-        response = HttpResponse(content_type='text/csv', charset=getattr(self, 'csv_charset', 'utf-8'))
+        response = HttpResponse(content_type='text/csv', charset=getattr(self, 'csv_charset', 'utf-8-sig'))
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
         writer = csv.writer(response)
 
