@@ -43,7 +43,9 @@ def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batc
             export = ModelData(model, next(iter_reader))
             # 如果需要转换类型
             if isinstance(conversion_type, dict):
-                export.conversion_type = conversion_type
+                for k, v in conversion_type.items():
+                    if k in export.model._meta.fields:
+                        export.conversion_type[k] = v
             for row in iter_reader:
                 # print(ku_field, xls_row, row)
                 kwargs = export.get_import_data(row)
