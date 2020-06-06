@@ -41,10 +41,13 @@ def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batc
         try:
             iter_reader = iter(reader)
             export = ModelData(model, next(iter_reader))
+            export.clean_fields.add('shouquan_kaishi_date')
+            export.clean_fields.add('shouquan_jieshu_date')
             # 如果需要转换类型
             if isinstance(conversion_type, dict):
                 for k, v in conversion_type.items():
-                    if k in export.model._meta.fields:
+                    # print(k, v, export.import_fields)
+                    if k in export.import_fields:
                         export.conversion_type[k] = v
             for row in iter_reader:
                 # print(ku_field, xls_row, row)
