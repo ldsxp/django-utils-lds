@@ -4,6 +4,12 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.11] - 2020-06-06
+### Changed
+- model.TableData 支持清理字段
+### Fixed
+- import_export.import_csv 修复字段转换问题
+
 ## [0.0.10] - 2020-04-03
 ### Changed
 - model.TableData 设置自定义转换的时候检查是否包含此字段
