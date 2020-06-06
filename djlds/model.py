@@ -381,6 +381,8 @@ class ModelData:
         self.import_fields = []
         self.import_index = []
         self.conversion_type = {}
+        # 清理字段，有些字段不能为空字符，我们在这里清理
+        self.clean_fields = set()
 
         names = {}
         verbose_names = {}
@@ -429,6 +431,8 @@ class ModelData:
         import_data = {}
 
         for index, field in zip(self.import_index, self.import_fields):
+            if field in self.clean_fields and not row[index]:
+                continue
             import_data[field] = row[index]
 
         for field, func in self.conversion_type.items():
