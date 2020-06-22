@@ -43,6 +43,7 @@ def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batc
             export = ModelData(model, next(iter_reader))
             export.clean_fields.add('shouquan_kaishi_date')
             export.clean_fields.add('shouquan_jieshu_date')
+            export.clean_fields.add('external_settlement_float')
             # 如果需要转换类型
             if isinstance(conversion_type, dict):
                 for k, v in conversion_type.items():
