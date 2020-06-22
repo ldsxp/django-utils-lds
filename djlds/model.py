@@ -431,8 +431,11 @@ class ModelData:
         import_data = {}
 
         for index, field in zip(self.import_index, self.import_fields):
-            if field in self.clean_fields and not row[index]:
-                continue
+            if field in self.clean_fields:
+                if row[index] == 0:
+                    ...
+                elif not row[index]:
+                    continue
             import_data[field] = row[index]
 
         for field, func in self.conversion_type.items():
