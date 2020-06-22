@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.12] - 2020-06-22
+### Fixed
+- model.TableData 清理字段的时候保留数值 0
+
 ## [0.0.11] - 2020-06-06
 ### Changed
 - model.TableData 支持清理字段
