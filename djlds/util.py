@@ -39,8 +39,8 @@ def django_setup(project_name=None, site_path=None):
         import django
         django.setup()
     except ModuleNotFoundError as e:
-        print("注：如果找不到 Django，请安装它: pip install django\n错误提示：", e)
-        exit()
+        raise ModuleNotFoundError(
+            f"\n\n{e}\n\n注：如果提示 ModuleNotFoundError: No module named 'django'，请安装 django: pip install django")
 
 
 def random_key():
