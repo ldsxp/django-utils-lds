@@ -1,10 +1,10 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.9
+#   版本：0.10
 #   作者：lds
-#   日期：2020-03-24
+#   日期：2020-07-04
 #   语言：Python 3.X
-#   说明：django 导入和导出
+#   说明：django 模型相关的函数
 # ---------------------------------------
 
 import operator
@@ -18,7 +18,7 @@ from django.conf import settings
 from django.apps import apps
 from django.db import models
 # group_by 这个分组 我喜欢
-from django.db.models import Count
+from django.db.models import Aggregate, Avg, Count, Max, Min, StdDev, Sum, Variance
 from django.db.models import QuerySet
 # # from django.db.models import FileField
 from django.db.models import Sum
@@ -503,6 +503,30 @@ def calc_sum(query_set, field_list):
     return query_set.aggregate(**{field: Sum(field) for field in field_list})
 
 
+def annotate(query_set, fields, func='Count'):
+    """
+    数据聚合
+
+    :param query_set: 查询集
+    :param fields: 字段列表
+    :param func: 聚合函数 Aggregate, Avg, Count, Max, Min, StdDev, Sum, Variance
+    :return: 聚合内容
+    """
+    assert isinstance(query_set, QuerySet)
+
+    functions = {
+        'Aggregate': Aggregate,
+        'Avg': Avg,
+        'Count': Count,
+        'Max': Max,
+        'Min': Min,
+        'StdDev': StdDev,
+        'Sum': Sum,
+        'Variance': Variance,
+    }
+    return query_set.values(*fields).annotate(*[functions[func](field) for field in fields])
+
+
 def group_by(query_set, group_field):
     """
     util:django 获取分类列表 ( 对某些取到的 QuerySet 分组)
@@ -516,8 +540,8 @@ def group_by(query_set, group_field):
     :return: 分组字段的内容列表
     """
 
-    assert isinstance(query_set, QuerySet)
-    django_groups = query_set.values(group_field).annotate(Count(group_field))
+    django_groups = annotate(query_set, [group_field], func='Count')
+    # django_groups = query_set.values(group_field).annotate(Count(group_field))
     groups = []
     for dict_ in django_groups:
         # print(dict_)

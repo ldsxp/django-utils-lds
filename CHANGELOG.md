@@ -4,6 +4,12 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.14] - 2020-07-04
+### Added
+- model.annotate 添加聚合函数
+### Changed
+- model.group_by 使用新添加的 annotate
+
 ## [0.0.13] - 2020-07-01
 ### Changed
 - util.django_setup 导入模块错误的时候，我们也传递错误
