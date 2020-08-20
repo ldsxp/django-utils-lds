@@ -25,6 +25,7 @@ class ExportCsvMixin:
     related_fields = {'ForeignKey字段': {'fields': ['字段1', '字段2'], }}
     # 排除导出字段
     csv_export_exclude = []
+    actions = ['export_as_csv', 'export_all_as_csv']
     """
 
     def export_as_csv(self, request, queryset):
