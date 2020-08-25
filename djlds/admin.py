@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：admin.py
-#   版本：0.1
+#   版本：0.2
 #   作者：lds
-#   日期：2020-02-27
+#   日期：2020-08-25
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -12,6 +12,7 @@ import csv
 from django.http import HttpResponse
 
 from djlds.model import ModelFields
+from django.utils.http import urlquote
 
 
 class ExportCsvMixin:
@@ -20,15 +21,19 @@ class ExportCsvMixin:
 
     支持自定义的内容：
     # 设置导出 Csv 文件的编码
-    csv_charset = 'gb2312'
+    csv_charset = 'utf-8-sig'  # gb2312 有些字符不支持
     # 自定义导出 ForeignKey 字段内容
     related_fields = {'ForeignKey字段': {'fields': ['字段1', '字段2'], }}
     # 排除导出字段
     csv_export_exclude = []
-    actions = ['export_as_csv', 'export_all_as_csv']
+    # 导出 csv 文件的名字
+    export_csv_name = '后台数据'
+
+    # 添加到动作
+    actions = ['export_as_csv', 'export_all_as_csv', ]
     """
 
-    def export_as_csv(self, request, queryset):
+    def export_as_csv(self, request, queryset, is_all=False):
         if getattr(self, 'using', None):
             queryset = queryset.using(self.using)
 
@@ -67,7 +72,12 @@ class ExportCsvMixin:
                 field_verbose_name.append(field.verbose_name)
 
         response = HttpResponse(content_type='text/csv', charset=getattr(self, 'csv_charset', 'utf-8-sig'))
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+        export_csv_name = getattr(self, 'export_csv_name', meta)
+        if is_all:
+            export_filename = urlquote(f'导出 {export_csv_name} 全部内容')
+        else:
+            export_filename = urlquote(f'导出 {export_csv_name} 中选择的内容')
+        response['Content-Disposition'] = f"attachment; filename={export_filename}.csv"
         writer = csv.writer(response)
 
         writer.writerow(field_verbose_name)
@@ -90,7 +100,7 @@ class ExportCsvMixin:
         return response
 
     def export_all_as_csv(self, request, queryset):
-        return self.export_as_csv(request, self.model.objects.all())
+        return self.export_as_csv(request, self.model.objects.all(), is_all=True)
 
     # Export Selected
     export_as_csv.short_description = "导出已选中（csv）"

@@ -4,6 +4,9 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.15] - 2020-08-25
+### Changed
+- admin.ExportCsvMixin 支持自定义导出文件名
 ## [0.0.14] - 2020-07-04
 ### Added
 - model.annotate 添加聚合函数
