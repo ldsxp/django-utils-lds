@@ -1,18 +1,19 @@
 # ---------------------------------------
 #   程序：admin.py
-#   版本：0.2
+#   版本：0.3
 #   作者：lds
-#   日期：2020-08-25
+#   日期：2020-08-30
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
 
 import csv
 
+from django.contrib import admin
+from django.utils.http import urlquote
 from django.http import HttpResponse
 
 from djlds.model import ModelFields
-from django.utils.http import urlquote
 
 
 class ExportCsvMixin:
@@ -105,3 +106,42 @@ class ExportCsvMixin:
     # Export Selected
     export_as_csv.short_description = "导出已选中（csv）"
     export_all_as_csv.short_description = "导出全部（csv）"
+
+
+class MultiDBModelAdmin(admin.ModelAdmin):
+    """
+    在 Django 管理界面中使用多数据库
+    https://docs.djangoproject.com/zh-hans/3.0/topics/db/multi-db/#exposing-multiple-databases-in-django-s-admin-interface
+    """
+    # 要使用的数据库
+    using = None
+
+    def save_model(self, request, obj, form, change):
+        """
+        告诉 Django 将对象保存到“指定”数据库
+        """
+        obj.save(using=self.using)
+
+    def delete_model(self, request, obj):
+        """
+        告诉 Django 从“指定”数据库中删除对象
+        """
+        obj.delete(using=self.using)
+
+    def get_queryset(self, request):
+        """
+        告诉 Django 在“指定”数据库中查找对象
+        """
+        return super(MultiDBModelAdmin, self).get_queryset(request).using(self.using)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """
+        告诉 Django 使用“指定”数据库上的查询填充 ForeignKey 小部件
+        """
+        return super(MultiDBModelAdmin, self).formfield_for_foreignkey(db_field, request, using=self.using, **kwargs)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """
+        告诉 Django 使用“指定”数据库上的查询填充 ManyToMany 小部件
+        """
+        return super(MultiDBModelAdmin, self).formfield_for_manytomany(db_field, request, using=self.using, **kwargs)
