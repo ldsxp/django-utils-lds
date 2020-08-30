@@ -4,6 +4,9 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.16] - 2020-08-30
+### Added
+- admin.MultiDBModelAdmin 添加在 Django 管理界面中使用多数据库
 ## [0.0.15] - 2020-08-25
 ### Changed
 - admin.ExportCsvMixin 支持自定义导出文件名
