@@ -503,16 +503,20 @@ def calc_sum(query_set, field_list):
     return query_set.aggregate(**{field: Sum(field) for field in field_list})
 
 
-def annotate(query_set, fields, func='Count'):
+def annotate(query_set, fields, func='Count', values_fields=None):
     """
     数据聚合
 
     :param query_set: 查询集
     :param fields: 字段列表
     :param func: 聚合函数 Aggregate, Avg, Count, Max, Min, StdDev, Sum, Variance
+    :param values_fields: 用来分组显示的字段名
     :return: 聚合内容
     """
     assert isinstance(query_set, QuerySet)
+
+    if values_fields is None:
+        values_fields = fields
 
     functions = {
         'Aggregate': Aggregate,
@@ -524,7 +528,7 @@ def annotate(query_set, fields, func='Count'):
         'Sum': Sum,
         'Variance': Variance,
     }
-    return query_set.values(*fields).annotate(*[functions[func](field) for field in fields])
+    return query_set.values(*values_fields).annotate(*[functions[func](field) for field in fields])
 
 
 def group_by(query_set, group_field):

@@ -4,12 +4,18 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.17] - 2020-11-26
+### Added
+- model.annotate 添加 values_fields 参数，用来分组显示的字段名
+
 ## [0.0.16] - 2020-08-30
 ### Added
 - admin.MultiDBModelAdmin 添加在 Django 管理界面中使用多数据库
+
 ## [0.0.15] - 2020-08-25
 ### Changed
 - admin.ExportCsvMixin 支持自定义导出文件名
+
 ## [0.0.14] - 2020-07-04
 ### Added
 - model.annotate 添加聚合函数
