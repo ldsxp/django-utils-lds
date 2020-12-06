@@ -4,6 +4,12 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.18] - 2020-12-06
+### Added
+- admin.BaseUserAdmin 普通用户只能看自己（owner 字段）的内容，保存修改的时候添加用户信息（write_uid、create_uid）
+- admin.SeparateActions 添加动作的分隔符（separate_1、separate_2、separate_3、separate_4、separate_5、separate_actions）
+- admin.FavoriteActions 添加收藏动作（收藏、取消收藏）
+
 ## [0.0.17] - 2020-11-26
 ### Added
 - model.annotate 添加 values_fields 参数，用来分组显示的字段名

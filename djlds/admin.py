@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：admin.py
-#   版本：0.3
+#   版本：0.4
 #   作者：lds
-#   日期：2020-08-30
+#   日期：2020-12-06
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -10,6 +10,7 @@
 import csv
 
 from django.contrib import admin
+from django.contrib import messages
 from django.utils.http import urlquote
 from django.http import HttpResponse
 
@@ -145,3 +146,98 @@ class MultiDBModelAdmin(admin.ModelAdmin):
         告诉 Django 使用“指定”数据库上的查询填充 ManyToMany 小部件
         """
         return super(MultiDBModelAdmin, self).formfield_for_manytomany(db_field, request, using=self.using, **kwargs)
+
+
+class BaseUserAdmin(admin.ModelAdmin):
+    """
+    1. 用来处理文件管理、文件分类、这些 model 的 用户字段自动补充
+    2. 用来针对 queryset 过滤当前用户的数据
+    """
+    # 在编辑、新增页面上排除
+    exclude = ('write_uid', 'create_uid',)
+
+    def get_queryset(self, request):
+        """
+        使当前登录的用户只能看到自己内容
+        """
+        qs = super(BaseUserAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        # 过滤当前用户只能看到自己的文章
+        return qs.filter(owner=request.user)
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            obj.write_uid = request.user
+        else:
+            # obj.write_uid = request.user
+            obj.create_uid = request.user
+        return super(BaseUserAdmin, self).save_model(request, obj, form, change)
+
+
+class SeparateActions:
+    """
+    分割动作，方便区分不同功能
+    """
+
+    actions = ['separate_1', 'separate_2', 'separate_3', 'separate_4', 'separate_5', 'separate_actions']
+
+    def separate_1(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    def separate_2(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    def separate_3(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    def separate_4(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    def separate_5(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    def separate_actions(self, request, queryset):
+        self.message_user(request, '未选择动作', level=messages.WARNING)
+
+    separate_1.short_description = "---------"
+    separate_2.short_description = "---------"
+    separate_3.short_description = "---------"
+    separate_4.short_description = "---------"
+    separate_5.short_description = "---------"
+    separate_actions.short_description = "---------"
+
+
+class FavoriteActions:
+    # actions = ['add_favorite', 'del_favorite']
+
+    def add_favorite(self, request, queryset):
+        """
+        添加到收藏
+        """
+        if request.user.is_superuser:
+            try:
+                count = queryset.filter(is_favorite=False).count()
+                update = queryset.update(is_favorite=True)
+                self.message_user(request, f'收藏: {count}:{update}')
+            except Exception as e:
+                self.message_user(request, f'修改失败: {e}', level=messages.ERROR)
+        else:
+            self.message_user(request, '修改失败，没有权限!', level=messages.ERROR)
+
+    def del_favorite(self, request, queryset):
+        """
+        取消收藏
+        """
+        if request.user.is_superuser:
+            try:
+                count = queryset.filter(is_favorite=True).count()
+                update = queryset.update(is_favorite=False)
+                self.message_user(request, f'取消收藏: {count}:{update}')
+            except Exception as e:
+                self.message_user(request, f'修改失败: {e}', level=messages.ERROR)
+        else:
+            self.message_user(request, '修改失败，没有权限!', level=messages.ERROR)
+
+    add_favorite.short_description = "收藏"
+    del_favorite.short_description = "取消收藏"
