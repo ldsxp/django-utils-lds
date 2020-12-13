@@ -241,3 +241,24 @@ class FavoriteActions:
 
     add_favorite.short_description = "收藏"
     del_favorite.short_description = "取消收藏"
+
+
+class UpdateQuerysetAction:
+    """
+    自定义更新类型的动作
+    """
+    # actions = ['自定义更新类型的动作']
+
+    def _update_queryset_action(self, name, request, queryset, is_superuser=False, **kwargs):
+        """
+        更新查询集
+        """
+        if is_superuser and not request.user.is_superuser:
+            self.message_user(request, f'管理员才有权限{name}!', level=messages.ERROR)
+            return
+        try:
+            self.message_user(request, f'{name} {queryset.update(**kwargs)}')
+        except Exception as e:
+            self.message_user(request, f'{name}失败: {e}', level=messages.ERROR)
+
+    # _update_queryset_action.short_description = "自定义更新类型的动作"

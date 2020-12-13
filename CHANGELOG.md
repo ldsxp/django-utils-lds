@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.19] - 2020-12-13
+### Added
+- admin.UpdateQuerysetAction 自定义更新类型的动作
+
 ## [0.0.18] - 2020-12-06
 ### Added
 - admin.BaseUserAdmin 普通用户只能看自己（owner 字段）的内容，保存修改的时候添加用户信息（write_uid、create_uid）
