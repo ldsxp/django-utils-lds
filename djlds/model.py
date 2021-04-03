@@ -553,6 +553,13 @@ def group_by(query_set, group_field):
     return groups
 
 
+def calc_file_size(objs, field='file_size'):
+    """
+    从 QuerySet 计算文件大小
+    """
+    return objs.exclude(**{field: None}).aggregate(**{field: Sum(field)})[field]
+
+
 def get_date_range(queryset, date_field='shujuriqi_date', format_string="%Y-%m-%d"):
     """
     获取 QuerySet 的日期间隔 参数 queryset，日期的字段

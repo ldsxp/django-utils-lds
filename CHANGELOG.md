@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.20] - 2021-04-03
+### Added
+- model.calc_file_size 从 QuerySet 计算文件大小
+
 ## [0.0.19] - 2020-12-13
 ### Added
 - admin.UpdateQuerysetAction 自定义更新类型的动作
