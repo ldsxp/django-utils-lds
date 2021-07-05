@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.21] - 2021-07-05
+### Added
+- import_export.BaseImportExcel 导入 Excel 的基础类
+
 ## [0.0.20] - 2021-04-03
 ### Added
 - model.calc_file_size 从 QuerySet 计算文件大小

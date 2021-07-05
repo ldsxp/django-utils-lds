@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.3
+#   版本：0.4
 #   作者：lds
-#   日期：2020-03-18
+#   日期：2021-07-05
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -11,8 +11,208 @@ import csv
 
 # 获取模型实例的字典
 from django.forms.models import model_to_dict
+from django.db import transaction
+from ilds.excel_xlsx import ReadXlsx
+from ilds.excel_xlrd import ReadXlsx as ReadXls
 
-from djlds.model import ModelFields, get_field_file_path, ModelData
+from djlds.model import ModelFields, get_field_file_path, ModelData, TableData
+
+
+class BaseImportExcel:
+    """
+    导入 Excel 的基础类
+
+    我们没有使用已经写好的导入库，是为了速度和方便定制
+    """
+
+    def __init__(self, model, exclude=None, revised=None, debug=False):
+        self.model = model
+        self.debug = debug
+        if exclude is None:
+            self.exclude = self.get_exclude()
+        else:
+            self.exclude = exclude
+        if revised is None:
+            self.revised = self.get_revised()
+        else:
+            self.revised = revised
+        self.table = TableData(model)
+        self.field_data = []
+        self.init_parsing_field()
+
+        self.titles = None
+        self.is_multiple_sheet = False
+
+        self.count = 0
+        self.load_list = []
+        self.info = []
+
+    def init_parsing_field(self):
+        """
+        初始化处理字段内容
+        """
+        parsing_field = {
+            'IntegerField': self.parsing_integer,
+            'FloatField': self.parsing_float,
+            'DateField': self.parsing_date,
+            'BooleanField': self.parsing_boolean,
+        }
+        for data in self.table.iter('field', 'type'):
+            _field, _type = data
+            # print(data)
+            if _type in parsing_field:
+                self.field_data.append((_field, parsing_field[_type]))
+        # pp(self.field_data)
+
+    def parsing_integer(self, field, data):
+        """
+        解析数字字段
+        """
+        if field in data:
+            try:
+                data[field] = int(data[field])
+            except Exception as e:
+                if self.debug:
+                    info = f'parsing_integer: {field} {e}'
+                    print(info)
+                    self.info.append(info)
+                del data[field]
+
+    def parsing_float(self, field, data):
+        """
+        解析浮点数字段
+        """
+        if field in data:
+            try:
+                data[field] = float(data[field])
+            except Exception as e:
+                if self.debug:
+                    print(f'parsing_float: {field} {e}')
+                del data[field]
+
+    def parsing_date(self, field, data):
+        """
+        解析日期字段
+        """
+        if field in data:
+            v = data[field]
+            if not v:
+                del data[field]
+
+    def parsing_boolean(self, field, data):
+        """
+        解析布尔字段
+        """
+        if field in data:
+            v = data[field]
+            if v in ['True', '有', ]:
+                data[field] = True
+            elif v in ['False', ]:
+                data[field] = False
+
+    def get_revised(self):
+        """
+        需要修正的标题
+        """
+        return {}
+
+    def get_exclude(self):
+        """
+        排除的标题
+        """
+        return []
+
+    def init_title(self, datasets):
+        """
+        初始化标题
+        """
+        self.titles = next(datasets)
+        ret = self.table.set_title(self.titles, exclude=self.exclude, **self.revised)
+        if any([data['Name'] for data in ret]):
+            print([data['Name'] for data in ret])
+            raise ValueError(f'没有匹配的字段：{ret}')
+        if self.table.duplicate_info:
+            raise ValueError(f'重复的字段：{self.table.duplicate_info}')
+        if self.debug:
+            print(self.table.table_fields)
+            print(self.table.index_list)
+
+    def init_handle(self):
+        """
+        初始化处理数据需要的前置内容
+        """
+        ...
+
+    def handle_data(self, data):
+        """
+        处理数据
+        """
+        for field, fun in self.field_data:
+            fun(field, data)
+        return data
+
+    def import_data(self, datasets):
+        """
+        导入数据
+        """
+
+        self.init_handle()
+
+        for i, data in enumerate(datasets):
+            # print(data)
+            kwargs = self.table.get_model_data(data)
+
+            if not any(kwargs.values()):
+                if self.debug:
+                    print('跳过行', data)
+                continue
+
+            kwargs = self.handle_data(kwargs)
+
+            try:
+                self.append(kwargs, data)
+            except Exception as e:
+                raise ValueError(f"i:{i} 错误: {e}\ntitles: {self.titles}\nkwargs: {data} ")
+
+        if not self.debug:
+            self.count = len(self.model.objects.bulk_create(self.load_list))
+
+        self.info.append(f'导入 {self.count} 行')
+
+        return self.info
+
+    def append(self, data, original_data):
+        if self.debug:
+            self.model.objects.create(**data)
+            self.count += 1
+        else:
+            self.load_list.append(self.model(**data))
+
+    @transaction.atomic
+    def start(self, file):
+        """
+        开始导入数据
+        @param file:
+        @return:
+        """
+
+        if file.endswith('.xlsx'):
+            read = ReadXlsx(file)
+        else:
+            read = ReadXls(file)
+
+        while 1:
+            datasets = read.values()
+            self.init_title(datasets)
+            self.import_data(datasets)
+
+            if self.is_multiple_sheet:
+                if read.next_sheet() is None:
+                    break
+            else:
+                break
+
+        return self.info
 
 
 def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000):

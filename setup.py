@@ -3,7 +3,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-version = '0.0.20'
+version = '0.0.21'
 
 """
 pip install -U spider-utils
@@ -86,6 +86,7 @@ setup(
     ],
     # 需要安装的依赖包
     install_requires=[
+        'ilds',
         'colorama',
         'Django>=2.2',
     ],
