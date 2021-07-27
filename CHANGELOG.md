@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.22] - 2021-07-27
+### Added
+- model.confirm_db 支持数据库名字
+
 ## [0.0.21] - 2021-07-05
 ### Added
 - import_export.BaseImportExcel 导入 Excel 的基础类

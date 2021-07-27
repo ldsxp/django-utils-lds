@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.10
+#   版本：0.11
 #   作者：lds
-#   日期：2020-07-04
+#   日期：2021-07-27
 #   语言：Python 3.X
 #   说明：django 模型相关的函数
 # ---------------------------------------
@@ -10,6 +10,8 @@
 import operator
 from functools import reduce
 # from collections import OrderedDict
+
+from colorama import Fore, Back, Style
 
 # from django.forms.models import model_to_dict  # 获取模型实例的字典
 from django.db.models.base import ModelBase, Model
@@ -570,24 +572,34 @@ def get_date_range(queryset, date_field='shujuriqi_date', format_string="%Y-%m-%
     return from_date, to_date
 
 
-def confirm_db():
+def confirm_db(db_name=None, is_sqlite3=True, title='确认是否继续修改数据库', message='开始修改数据库'):
     """
     确认是否修改线上数据库
     本地操作，因为如果没有修改会直接退出，防止误操作
+
+    :param db_name: 数据库名字，优先（sqlite3）参数处理
+    :param is_sqlite3: 如果是 sqlite3 数据库 直接修改数据
+    :param title: 提示标题
+    :param message: 确认后的提示信息
+    :return:
     """
-    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+
+    name = settings.DATABASES['default']['NAME']
+    if db_name is not None and db_name == name:
         return
+    elif is_sqlite3 and settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+        return
+
     try:
         import wx
         app = wx.App()
-        dlg = wx.MessageDialog(None, "正在修改服务器数据库，是否继续？", "警告：不是连接的本地数据库", wx.YES_NO | wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, f'正在修改数据库({name})，是否继续？', title, wx.YES_NO | wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES:
-            print("修改服务器线上数据库......")
+            print(f'{Fore.MAGENTA}{message}({name}){Style.RESET_ALL}')
             return
     except ModuleNotFoundError:
         from djlds.util import confirm_yes_no
-        if confirm_yes_no(title='警告：不是连接的本地数据库', text='正在修改服务器数据库，是否继续？\n输入 y 确认，其他任意字符表示取消'):
-            print("修改服务器线上数据库......")
+        if confirm_yes_no(title=title, text=f'正在修改数据库({name})，是否继续？\n输入 y 确认，其他任意字符表示取消'):
+            print(f'{Fore.MAGENTA}{message}({name}){Style.RESET_ALL}')
             return
-    print("退出程序，不修改线上数据库！")
-    exit()
+    exit(f'退出程序，不修改数据库({name})！')
