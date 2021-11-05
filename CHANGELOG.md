@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.23] - 2021-11-05
+### Added
+- admin.CopyQuerysetAction 复制选中的内容(只支持复制单个内容)
+
 ## [0.0.22] - 2021-07-27
 ### Added
 - model.confirm_db 支持数据库名字

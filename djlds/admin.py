@@ -1,10 +1,10 @@
 # ---------------------------------------
 #   程序：admin.py
-#   版本：0.4
+#   版本：0.5
 #   作者：lds
-#   日期：2020-12-06
+#   日期：2021-11-05
 #   语言：Python 3.X
-#   说明：django 导入和导出
+#   说明：django 后台管理相关的动作和功能
 # ---------------------------------------
 
 import csv
@@ -247,6 +247,7 @@ class UpdateQuerysetAction:
     """
     自定义更新类型的动作
     """
+
     # actions = ['自定义更新类型的动作']
 
     def _update_queryset_action(self, name, request, queryset, is_superuser=False, **kwargs):
@@ -262,3 +263,22 @@ class UpdateQuerysetAction:
             self.message_user(request, f'{name}失败: {e}', level=messages.ERROR)
 
     # _update_queryset_action.short_description = "自定义更新类型的动作"
+
+
+class CopyQuerysetAction:
+    # actions = ['copy_queryset']
+
+    def copy_queryset(self, request, queryset):
+        """
+        复制选中的内容(只支持复制单个内容)
+        """
+        count = queryset.count()
+        if count > 1:
+            self.message_user(request, f'不能复制 {count} 个内容，我们只支持复制单个内容', level=messages.ERROR)
+        else:
+            obj = queryset[0]
+            obj.id = None
+            obj.save()
+            self.message_user(request, f'复制 {obj} 成功', level=messages.INFO)
+
+    copy_queryset.short_description = "复制选中的内容(只支持复制单个内容)"
