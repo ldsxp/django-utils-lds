@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.11
+#   版本：0.12
 #   作者：lds
-#   日期：2021-07-27
+#   日期：2021-12-07
 #   语言：Python 3.X
 #   说明：django 模型相关的函数
 # ---------------------------------------
@@ -572,20 +572,26 @@ def get_date_range(queryset, date_field='shujuriqi_date', format_string="%Y-%m-%
     return from_date, to_date
 
 
-def confirm_db(db_name=None, is_sqlite3=True, title='确认是否继续修改数据库', message='开始修改数据库'):
+def confirm_db(db_name=None, is_sqlite3=True, db_name_list=None, title='确认是否继续修改数据库', message='开始修改数据库'):
     """
     确认是否修改线上数据库
     本地操作，因为如果没有修改会直接退出，防止误操作
 
     :param db_name: 数据库名字，优先（sqlite3）参数处理
     :param is_sqlite3: 如果是 sqlite3 数据库 直接修改数据
+    :param db_name_list: 可以直接修改的数据库名字列表
     :param title: 提示标题
     :param message: 确认后的提示信息
     :return:
     """
 
+    if db_name_list is None:
+        db_name_list = []
+
     name = settings.DATABASES['default']['NAME']
     if db_name is not None and db_name == name:
+        return
+    elif name in db_name_list:
         return
     elif is_sqlite3 and settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
         return

@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.24] - 2021-12-07
+### Added
+- model.confirm_db 添加 db_name_list 参数，支持可以直接修改的数据库名字列表
+
 ## [0.0.23] - 2021-11-05
 ### Added
 - admin.CopyQuerysetAction 复制选中的内容(只支持复制单个内容)
