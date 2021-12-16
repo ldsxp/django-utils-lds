@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.4
+#   版本：0.5
 #   作者：lds
-#   日期：2021-07-05
+#   日期：2021-12-16
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -312,7 +312,7 @@ class LdsExportCsv:
 
         # 设置排除内容
         if exclude is None or not isinstance(exclude, list):
-            self.exclude = ['denglushijian_date']  # 'id',
+            self.exclude = []  # 'id',
         else:
             self.exclude = exclude
 
@@ -382,9 +382,9 @@ class LdsExportCsv:
                         self.info[i_field_list] += int(value)
                     # print(self.info)
                 # 处理日期
-                if i_field_list == 'shujuriqi_date':
-                    value = model_dict[i_field_list].strftime("%Y-%m")
-                elif i_field_list.endswith('_date'):
+                # if i_field_list == 'shujuriqi_date':
+                #     value = model_dict[i_field_list].strftime("%Y-%m")
+                if i_field_list.endswith('_date'):
                     value = model_dict[i_field_list].strftime("%Y-%m-%d")
                 # 处理文件
                 elif i_field_list.endswith('_file'):

@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.25] - 2021-12-16
+### Changed
+- import_export LdsExportCsv 设置默认排除字段为空，数据日期改为 YYYY-MM-DD，方便导入数据库
+
 ## [0.0.24] - 2021-12-07
 ### Added
 - model.confirm_db 添加 db_name_list 参数，支持可以直接修改的数据库名字列表
