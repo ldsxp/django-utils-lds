@@ -3,7 +3,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-version = '0.0.25'
+version = '0.0.26'
 
 """
 pip install -U spider-utils

@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.26] - 2021-12-16
+### Changed
+- import_export import_csv 在导入的时候支持重命名标题名和排除标题
+
 ## [0.0.25] - 2021-12-16
 ### Changed
 - import_export LdsExportCsv 设置默认排除字段为空，数据日期改为 YYYY-MM-DD，方便导入数据库

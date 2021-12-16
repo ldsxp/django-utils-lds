@@ -1,6 +1,6 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.5
+#   版本：0.6
 #   作者：lds
 #   日期：2021-12-16
 #   语言：Python 3.X
@@ -215,7 +215,8 @@ class BaseImportExcel:
         return self.info
 
 
-def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000):
+def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000, import_names=None,
+               exclude=None):
     """
     导入 csv 文件到数据库
 
@@ -226,6 +227,8 @@ def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batc
     :param encoding: 保存文件编码
     :param conversion_type: 转换字段数据内容
     :param max_batch: 一次最大导入数量，超过以后分批导入
+    :param import_names: 重命名标题名，比如 厂牌名称 改名为 版权公司名
+    :param exclude: 排除导入的内容
     :return:
     """
 
@@ -240,7 +243,7 @@ def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batc
 
         try:
             iter_reader = iter(reader)
-            export = ModelData(model, next(iter_reader))
+            export = ModelData(model, next(iter_reader), import_names, exclude)
             export.clean_fields.add('shouquan_kaishi_date')
             export.clean_fields.add('shouquan_jieshu_date')
             export.clean_fields.add('external_settlement_float')
