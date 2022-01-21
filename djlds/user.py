@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：user.py
-#   版本：0.1
+#   版本：0.2
 #   作者：lds
-#   日期：2019-02-27
+#   日期：2022-01-21
 #   语言：Python 3.X
 #   说明：django 用户相关的函数集合
 # ---------------------------------------
@@ -14,12 +14,21 @@ from django.contrib.auth.hashers import make_password  # , check_password
 User = get_user_model()
 
 
-def add_superuser(username, email, password):
+def create_user(username, email, password, is_superuser=False, is_staff=True, is_active=True):
     """
-    添加 django 超级用户
+    创建用户
 
-    from ilds.django.user import add_superuser
-    add_superuser(username='admin', email='admin@qq.com', password='123456')
+    例子：
+    from ilds.django.user import create_user
+    create_user(username='admin', email='admin@qq.com', password='123456', is_superuser=False, is_staff=True)
+
+    :param username: 用户名
+    :param email: 邮箱
+    :param password: 密码，支持直接设置秘钥，秘钥前缀是 pbkdf2_
+    :param is_superuser: 是否是超级用户
+    :param is_staff: 用户是否可以登录到管理站点
+    :param is_active: 用户是否被认为是活跃的。可以用来代替删除帐号
+    :return: 创建成功的用户
     """
     if not password.startswith('pbkdf2_'):
         password = make_password(password)
@@ -28,11 +37,12 @@ def add_superuser(username, email, password):
     add_user = User.objects.create(**{
         'password': password,
         'last_login': None,
-        'is_superuser': True,
+        'is_superuser': is_superuser,
         'username': username,
         'email': email,
-        'is_staff': True,
-        'is_active': True})
+        'is_staff': is_staff,
+        'is_active': is_active
+    })
 
     try:
         from allauth.account.models import EmailAddress  # django-allauth
@@ -44,4 +54,20 @@ def add_superuser(username, email, password):
     except Exception as e:
         print(e)
 
-    return True
+    return add_user
+
+
+def add_superuser(username, email, password):
+    """
+    添加超级管理员用户
+
+    例子：
+    from ilds.django.user import add_superuser
+    add_superuser(username='admin', email='admin@qq.com', password='123456')
+
+    :param username: 用户名
+    :param email: 邮箱
+    :param password: 密码，支持直接设置秘钥，秘钥前缀是 pbkdf2_
+    :return: 创建成功的用户
+    """
+    return create_user(username, email, password, is_superuser=True, is_staff=True, is_active=True)

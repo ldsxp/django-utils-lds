@@ -4,6 +4,12 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.27] - 2022-01-21
+### Added
+- user.create_user 添加创建用户的函数
+### Changed
+- - user.add_superuser 使用 create_user 创建超级管理员
+
 ## [0.0.26] - 2021-12-16
 ### Changed
 - import_export import_csv 在导入的时候支持重命名标题名和排除标题
