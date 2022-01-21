@@ -400,6 +400,7 @@ class ModelData:
             verbose_names[f.verbose_name] = {'name': f.name, 'internal_type': internal_type}
 
         for i, field in enumerate(row):
+            field = field.strip()
             # 排除的内容
             if field in exclude:
                 continue
@@ -425,7 +426,9 @@ class ModelData:
             else:
                 # pass
                 # print('导入失败：-------------------表头 %s %s 应该为 %s 。-------------------' % (i + 1, field, now_0[i]))
-                raise RuntimeError('导入失败：row[%s]：%s 不能导入数据库。' % (i + 1, field))
+                # print(field, field in names, names, )
+                # print(field, field in verbose_names, verbose_names, )
+                raise RuntimeError('导入失败：row[%s]："%s" 不能导入数据库。' % (i + 1, field))
 
     def get_import_data(self, row):
         """
