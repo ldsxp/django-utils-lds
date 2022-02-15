@@ -216,7 +216,15 @@ class BaseImportExcel:
             else:
                 break
 
+        self.end_import()
+
         return self.info
+
+    def end_import(self, *args, **kwargs):
+        """
+        结束导入数据的时候调用
+        """
+        ...
 
 
 def import_csv(model, csv_file, encoding='utf-8', conversion_type=None, max_batch=10000, import_names=None,
