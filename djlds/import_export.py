@@ -8,6 +8,7 @@
 # ---------------------------------------
 
 import csv
+import time
 
 # 获取模型实例的字典
 from django.forms.models import model_to_dict
@@ -47,6 +48,8 @@ class BaseImportExcel:
         self.count = 0
         self.load_list = []
         self.adding_data = {}  # 需要附加数据的时候使用
+        # 导入数据用的时间
+        self.time_cost = 0
         self.info = []
 
     def init_parsing_field(self):
@@ -200,6 +203,8 @@ class BaseImportExcel:
 
         self.file = file
 
+        start_time = time.time()
+
         if file.endswith('.xlsx'):
             read = ReadXlsx(file)
         else:
@@ -215,6 +220,8 @@ class BaseImportExcel:
                     break
             else:
                 break
+
+        self.time_cost = time.time() - start_time
 
         self.end_import()
 

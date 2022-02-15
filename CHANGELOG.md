@@ -4,13 +4,17 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.30] - 2022-02-15
+### Changed
+- import_export.BaseImportExcel 添加实例属性：time_cost
+
 ## [0.0.29] - 2022-02-15
 ### Changed
-- - import_export.BaseImportExcel 添加 end_import 结束导入数据的时候调用
+- import_export.BaseImportExcel 添加 end_import 结束导入数据的时候调用
 
 ## [0.0.28] - 2022-02-15
 ### Changed
-- - import_export.BaseImportExcel 添加实例属性：file、adding_data
+- import_export.BaseImportExcel 添加实例属性：file、adding_data
 
 ## [0.0.27] - 2022-01-21
 ### Added
