@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.28] - 2022-02-15
+### Changed
+- - import_export.BaseImportExcel 添加实例属性：file、adding_data
+
 ## [0.0.27] - 2022-01-21
 ### Added
 - user.create_user 添加创建用户的函数

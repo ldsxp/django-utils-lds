@@ -22,10 +22,11 @@ class BaseImportExcel:
     """
     导入 Excel 的基础类
 
-    我们没有使用已经写好的导入库，是为了速度和方便定制
+    我们没有使用已经写好的导入库，是为了速度和方便定制。
     """
 
     def __init__(self, model, exclude=None, revised=None, debug=False):
+        self.file = None
         self.model = model
         self.debug = debug
         if exclude is None:
@@ -45,6 +46,7 @@ class BaseImportExcel:
 
         self.count = 0
         self.load_list = []
+        self.adding_data = {}  # 需要附加数据的时候使用
         self.info = []
 
     def init_parsing_field(self):
@@ -195,6 +197,8 @@ class BaseImportExcel:
         @param file:
         @return:
         """
+
+        self.file = file
 
         if file.endswith('.xlsx'):
             read = ReadXlsx(file)
