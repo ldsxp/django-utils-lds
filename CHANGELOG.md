@@ -4,6 +4,11 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.3.2] - 2022-03-02
+### Changed
+- 版本改为日期模式
+- import_export.BaseImportExcel 支持 csv 格式
+
 ## [0.0.30] - 2022-02-15
 ### Changed
 - import_export.BaseImportExcel 添加实例属性：time_cost

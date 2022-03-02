@@ -9,6 +9,7 @@
 
 import csv
 import time
+from pathlib import Path
 
 # 获取模型实例的字典
 from django.forms.models import model_to_dict
@@ -194,24 +195,41 @@ class BaseImportExcel:
             self.load_list.append(self.model(**data))
 
     @transaction.atomic
-    def start(self, file):
+    def start(self, file, *args, **kwargs):
         """
         开始导入数据
         @param file:
         @return:
         """
 
-        self.file = file
+        self.file = Path(file)
 
         start_time = time.time()
 
-        if file.endswith('.xlsx'):
-            read = ReadXlsx(file)
+        suffix = self.file.suffix.lower()
+        if suffix == '.xlsx':
+            read = ReadXlsx(file, *args, **kwargs)
+            datasets = read.values()
+        elif suffix == '.xls':
+            read = ReadXls(file, *args, **kwargs)
+            datasets = read.values()
+        elif suffix == '.csv':
+            if 'encoding' in kwargs:
+                encoding = kwargs.pop('encoding')
+            else:
+                encoding = 'utf-8-sig'
+            # 读取csv文件
+            f = open(file, newline='', encoding=encoding)
+            reader = csv.reader(f, *args, **kwargs)  # delimiter=':', quoting=csv.QUOTE_NONE
+            datasets = iter(reader)
+            if self.is_multiple_sheet:
+                print('cvs 文件没有多个表')
+                self.is_multiple_sheet = False
         else:
-            read = ReadXls(file)
+            raise ValueError(f'导入 {file} 失败， 不支持导入 {suffix[1:]} 格式')
 
         while 1:
-            datasets = read.values()
+
             self.init_title(datasets)
             self.import_data(datasets)
 
