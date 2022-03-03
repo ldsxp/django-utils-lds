@@ -49,6 +49,7 @@ class BaseImportExcel:
         self.count = 0
         self.load_list = []
         self.adding_data = {}  # 需要附加数据的时候使用
+        self.model_kwargs = {}  # 创建数据的时候添加公用数据
         # 导入数据用的时间
         self.time_cost = 0
         self.info = []
@@ -167,6 +168,7 @@ class BaseImportExcel:
         for i, data in enumerate(datasets):
             # print(data)
             kwargs = self.table.get_model_data(data)
+            kwargs.update(self.model_kwargs)
 
             if not any(kwargs.values()):
                 if self.debug:
