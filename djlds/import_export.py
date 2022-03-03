@@ -183,7 +183,7 @@ class BaseImportExcel:
                 raise ValueError(f"i:{i} 错误: {e}\ntitles: {self.titles}\nkwargs: {data} ")
 
         if not self.debug:
-            self.count = len(self.model.objects.bulk_create(self.load_list))
+            self.count += len(self.model.objects.bulk_create(self.load_list))
 
         self.info.append(f'导入 {self.count} 行')
 
