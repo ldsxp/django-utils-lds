@@ -9,10 +9,13 @@
 
 import csv
 
+from ilds.file import human_size
+
 from django.contrib import admin
 from django.contrib import messages
 from django.utils.http import urlquote
 from django.http import HttpResponse
+from django.db.models import Sum
 
 from djlds.model import ModelFields
 
@@ -282,3 +285,24 @@ class CopyQuerysetAction:
             self.message_user(request, f'复制 {obj} 成功', level=messages.INFO)
 
     copy_queryset.short_description = "复制选中的内容(只支持复制单个内容)"
+
+
+class FileSizeQuerysetAction:
+    # actions = ['action_calc_file_size']
+
+    def action_calc_file_size(self, request, queryset):
+        """
+        计算选择内容的文件大小
+        """
+        field = getattr(self, 'file_size_field', 'file_size')
+        exclude_count = queryset.filter(**{field: None}).count()
+        if exclude_count:
+            info = f'（跳过 {exclude_count} 个文件大小为空的内容）'
+            queryset = queryset.exclude(**{field: None})
+        else:
+            info = ''
+        file_size = queryset.aggregate(**{field: Sum(field)})[field]
+        # print(human_size(file_size))
+        self.message_user(request, f'选择内容的文件大小：{human_size(file_size)}' + info, level=messages.INFO)
+
+    action_calc_file_size.short_description = "计算选择内容的文件大小"

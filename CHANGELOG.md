@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.3.26] - 2022-03-26
+### Added
+- admin.FileSizeQuerysetAction 计算选择内容的文件大小
+
 ## [2022.3.3] - 2022-03-03
 ### Changed
 - import_export.BaseImportExcel 添加实例属性：model_kwargs
