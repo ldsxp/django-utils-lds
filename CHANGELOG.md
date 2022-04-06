@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.4.6] - 2022-04-06
+### Added
+- import_export.BaseImportExcel 导入的时候添加附加数据 adding_data
+
 ## [2022.3.26] - 2022-03-26
 ### Added
 - admin.FileSizeQuerysetAction 计算选择内容的文件大小
