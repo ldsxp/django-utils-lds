@@ -2,7 +2,7 @@
 #   程序：import_export.py
 #   版本：0.7
 #   作者：lds
-#   日期：2022-04-06
+#   日期：2022-04-15
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -190,8 +190,6 @@ class BaseImportExcel:
         return self.info
 
     def append(self, data, original_data):
-        # 添加附加数据
-        data.update(self.adding_data)
         if self.debug:
             self.model.objects.create(**data)
             self.count += 1
