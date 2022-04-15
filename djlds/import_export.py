@@ -30,6 +30,7 @@ class BaseImportExcel:
     def __init__(self, model, exclude=None, revised=None, debug=False):
         self.file = None
         self.model = model
+        self.read = None  # 正在读取的数据，有时候我们会用到数据列表以外的数据
         self.debug = debug
         if exclude is None:
             self.exclude = self.get_exclude()
@@ -210,11 +211,11 @@ class BaseImportExcel:
 
         suffix = self.file.suffix.lower()
         if suffix == '.xlsx':
-            read = ReadXlsx(file, *args, **kwargs)
-            datasets = read.values()
+            self.read = ReadXlsx(file, *args, **kwargs)
+            datasets = self.read.values()
         elif suffix == '.xls':
-            read = ReadXls(file, *args, **kwargs)
-            datasets = read.values()
+            self.read = ReadXls(file, *args, **kwargs)
+            datasets = self.read.values()
         elif suffix == '.csv':
             if 'encoding' in kwargs:
                 encoding = kwargs.pop('encoding')
@@ -222,8 +223,8 @@ class BaseImportExcel:
                 encoding = 'utf-8-sig'
             # 读取csv文件
             f = open(file, newline='', encoding=encoding)
-            reader = csv.reader(f, *args, **kwargs)  # delimiter=':', quoting=csv.QUOTE_NONE
-            datasets = iter(reader)
+            self.read = csv.reader(f, *args, **kwargs)  # delimiter=':', quoting=csv.QUOTE_NONE
+            datasets = iter(self.read)
             if self.is_multiple_sheet:
                 print('cvs 文件没有多个表')
                 self.is_multiple_sheet = False
@@ -236,7 +237,7 @@ class BaseImportExcel:
             self.import_data(datasets)
 
             if self.is_multiple_sheet:
-                if read.next_sheet() is None:
+                if self.read.next_sheet() is None:
                     break
             else:
                 break

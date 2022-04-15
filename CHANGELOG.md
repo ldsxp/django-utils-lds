@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.4.15.1] - 2022-04-15.1
+### Added
+- import_export.BaseImportExcel 添加 read 保存正在读取的数据类
+
 ## [2022.4.15] - 2022-04-15
 ### Changed
 - import_export.BaseImportExcel 取消导入的时候添加附加数据 adding_data，因为这个是我们自定义的数据，导入的时候使用 model_kwargs
