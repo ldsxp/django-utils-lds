@@ -239,6 +239,8 @@ class BaseImportExcel:
             if self.is_multiple_sheet:
                 if self.read.next_sheet() is None:
                     break
+                datasets = self.read.values()
+                self.load_list = []
             else:
                 break
 

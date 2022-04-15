@@ -4,7 +4,11 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2022.4.15.1] - 2022-04-15.1
+## [2022.4.15.2] - 2022-04-15
+### Fixed
+- import_export.BaseImportExcel 修复多表导入的时候重复导入内容
+
+## [2022.4.15.1] - 2022-04-15
 ### Added
 - import_export.BaseImportExcel 添加 read 保存正在读取的数据类
 
