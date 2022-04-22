@@ -137,7 +137,7 @@ class ModelFields:
             exclude = []
         for f in model._meta.fields:  # model._meta._get_fields(reverse=False) 包括 ManyToMany 字段
             field_name = f.name
-            verbose_name = f.verbose_name
+            verbose_name = str(f.verbose_name)
             type_name = type(f).__name__
             if field_name in exclude or verbose_name in exclude or type_name in exclude:
                 continue
@@ -397,7 +397,7 @@ class ModelData:
             internal_type = f.get_internal_type() if callable(getattr(f, "get_internal_type", None)) else ""
             # print(internal_type, f.verbose_name, f.name)
             names[f.name] = {'name': f.name, 'internal_type': internal_type}
-            verbose_names[f.verbose_name] = {'name': f.name, 'internal_type': internal_type}
+            verbose_names[str(f.verbose_name)] = {'name': f.name, 'internal_type': internal_type}
 
         for i, field in enumerate(row):
             field = field.strip()

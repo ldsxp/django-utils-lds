@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.4.22] - 2022-04-22
+### Fixed
+- 处理模型 verbose_name 的时候转为str，因为有时候他的值是惰性的翻译
+
 ## [2022.4.15.2] - 2022-04-15
 ### Fixed
 - import_export.BaseImportExcel 修复多表导入的时候重复导入内容
