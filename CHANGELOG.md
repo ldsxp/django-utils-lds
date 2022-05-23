@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.5.23] - 2022-05-23
+### Fixed
+- model.annotate 修复集合数据产生多条重复数据问题
+
 ## [2022.5.18] - 2022-05-18
 ### Added
 - timezone.get_local_now 获取本地的当前时间

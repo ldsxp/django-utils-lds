@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：model.py
-#   版本：0.12
+#   版本：0.13
 #   作者：lds
-#   日期：2021-12-07
+#   日期：2022-05-23
 #   语言：Python 3.X
 #   说明：django 模型相关的函数
 # ---------------------------------------
@@ -533,7 +533,8 @@ def annotate(query_set, fields, func='Count', values_fields=None):
         'Sum': Sum,
         'Variance': Variance,
     }
-    return query_set.values(*values_fields).annotate(*[functions[func](field) for field in fields])
+    return query_set.order_by(*values_fields).values(*values_fields).annotate(
+        *[functions[func](field) for field in fields])
 
 
 def group_by(query_set, group_field):
