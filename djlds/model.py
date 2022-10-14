@@ -8,6 +8,7 @@
 # ---------------------------------------
 
 import operator
+import os
 from functools import reduce
 # from collections import OrderedDict
 
@@ -24,6 +25,7 @@ from django.db.models import Aggregate, Avg, Count, Max, Min, StdDev, Sum, Varia
 from django.db.models import QuerySet
 # # from django.db.models import FileField
 from django.db.models import Sum
+from django.forms.models import model_to_dict
 
 from djlds.xlsx_util import xl_col_to_name
 
@@ -613,3 +615,29 @@ def confirm_db(db_name=None, is_sqlite3=True, db_name_list=None, title='确认�
             print(f'{Fore.MAGENTA}{message}({name}){Style.RESET_ALL}')
             return
     exit(f'退出程序，不修改数据库({name})！')
+
+
+def sync_model(model, src, dst, fields=None, exclude=None, is_clear=False):
+    """
+    同步模型数据
+    :param model:
+    :param src:
+    :param dst:
+    :param fields:
+    :param exclude:
+    :param is_clear:
+    :return:
+    """
+
+    load_list = []
+
+    for obj in model.objects.using(src).all():
+        kwargs = model_to_dict(obj, fields=fields, exclude=exclude)
+        load_list.append(model(**kwargs))
+
+    if load_list:
+        if is_clear:
+            print('删除数据', model.objects.using(dst).all().delete())
+        print('成功导入 %s 行' % len(model.objects.using(dst).bulk_create(load_list)))
+    else:
+        print('没有数据导入！')
