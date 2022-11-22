@@ -136,6 +136,7 @@ class BaseImportExcel:
         """
         self.titles = next(datasets)
         ret = self.table.set_title(self.titles, exclude=self.exclude, **self.revised)
+        # print('set_title', self.titles, self.exclude, self.revised)
         if any([data['Name'] for data in ret]):
             print([data['Name'] for data in ret])
             raise ValueError(f'没有匹配的字段：{ret}')

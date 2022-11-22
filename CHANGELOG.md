@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2022.11.22] - 2022-11-22
+### Fixed
+- 替换 DJango 不支持的 urlquote
+
 ## [2022.10.14] - 2022-10-14
 ### Added
 - model.sync_model 同步模型数据

@@ -13,7 +13,8 @@ from ilds.file import human_size
 
 from django.contrib import admin
 from django.contrib import messages
-from django.utils.http import urlquote
+from urllib.parse import quote as urlquote
+
 from django.http import HttpResponse
 from django.db.models import Sum
 
