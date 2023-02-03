@@ -1,2 +1,2 @@
 colorama
-Django==3.2.11
+Django==3.2.17
