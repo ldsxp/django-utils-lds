@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.7
+#   版本：0.8
 #   作者：lds
-#   日期：2022-04-15
+#   日期：2022-05-11
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -11,11 +11,11 @@ import csv
 import time
 from pathlib import Path
 
+from django.db import transaction
 # 获取模型实例的字典
 from django.forms.models import model_to_dict
-from django.db import transaction
-from ilds.excel_xlsx import ReadXlsx
 from ilds.excel_xlrd import ReadXlsx as ReadXls
+from ilds.excel_xlsx import ReadXlsx
 
 from djlds.model import ModelFields, get_field_file_path, ModelData, TableData
 
@@ -112,11 +112,13 @@ class BaseImportExcel:
         解析布尔字段
         """
         if field in data:
-            v = data[field]
-            if v in ['True', '有', ]:
+            v = str(data[field]).lower()
+            if v in ['true', '有', '是', ]:
                 data[field] = True
-            elif v in ['False', ]:
+            elif v in ['false', '无', '否', ] or not v:
                 data[field] = False
+            elif v in ['none', '未知', ]:
+                data[field] = None
 
     def get_revised(self):
         """

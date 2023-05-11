@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.5.11] - 2023-05-11
+### Fixed
+- import_export.BaseImportExcel 支持更多的布尔导入类型
+
 ## [2022.11.22] - 2022-11-22
 ### Fixed
 - 替换 DJango 不支持的 urlquote
