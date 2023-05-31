@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.5.31] - 2023-05-31
+### Added
+- admin.QuickDeleteQuerysetAction 直接删除选择的内容（不需要确认，谨慎操作）
+
 ## [2023.5.11] - 2023-05-11
 ### Fixed
 - import_export.BaseImportExcel 支持更多的布尔导入类型

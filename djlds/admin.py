@@ -307,3 +307,16 @@ class FileSizeQuerysetAction:
         self.message_user(request, f'选择内容的文件大小：{human_size(file_size)}' + info, level=messages.INFO)
 
     action_calc_file_size.short_description = "计算选择内容的文件大小"
+
+
+class QuickDeleteQuerysetAction:
+    # actions = ['action_quick_delete']
+
+    def action_quick_delete(self, request, queryset):
+        """
+        直接删除选择的内容（不需要确认，谨慎操作）
+        """
+
+        self.message_user(request, f'{queryset.delete()}', level=messages.INFO)
+
+    action_quick_delete.short_description = "直接删除选择的内容（不需要确认，谨慎操作）"
