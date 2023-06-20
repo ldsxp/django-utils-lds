@@ -4,6 +4,11 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.6.20] - 2026-06-20
+### Changed
+- 版本改为日期模式
+- import_export.BaseImportExcel 支持 csv 格式
+
 ## [2023.5.31] - 2023-05-31
 ### Added
 - admin.QuickDeleteQuerysetAction 直接删除选择的内容（不需要确认，谨慎操作）

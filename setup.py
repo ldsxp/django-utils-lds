@@ -3,7 +3,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-version = '2023.5.31'
+version = '2023.6.20'
 
 """
 pip install -U spider-utils
@@ -88,6 +88,7 @@ setup(
     install_requires=[
         'ilds',
         'colorama',
+        'django-admin-generator>=2.6.0',
         'Django>=2.2',
     ],
     include_package_data=True,
