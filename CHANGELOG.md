@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.6.28] - 2026-06-28
+### Changed
+- import_export.BaseImportExcel 支持 exclude_sheet 跳过表格
+
 ## [2023.6.20] - 2026-06-20
 ### Changed
 - 版本改为日期模式

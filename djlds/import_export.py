@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.8
+#   版本：0.9
 #   作者：lds
-#   日期：2022-05-11
+#   日期：2022-06-28
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -201,16 +201,20 @@ class BaseImportExcel:
             self.load_list.append(self.model(**data))
 
     @transaction.atomic
-    def start(self, file, *args, **kwargs):
+    def start(self, file, exclude_sheet=None, *args, **kwargs):
         """
         开始导入数据
         @param file:
+        @param exclude_sheet: 忽略导入的表
         @return:
         """
 
         self.file = Path(file)
 
         start_time = time.time()
+
+        if exclude_sheet is None:
+            exclude_sheet = []
 
         suffix = self.file.suffix.lower()
         if suffix == '.xlsx':
@@ -236,8 +240,14 @@ class BaseImportExcel:
 
         while 1:
 
-            self.init_title(datasets)
-            self.import_data(datasets)
+            # 跳过结算数据导入
+            if self.read.title in exclude_sheet:
+                if self.debug:
+                    print(f'跳过导入 {self.read.title}')
+                self.info.append(f'跳过导入 {self.read.title}')
+            else:
+                self.init_title(datasets)
+                self.import_data(datasets)
 
             if self.is_multiple_sheet:
                 if self.read.next_sheet() is None:
