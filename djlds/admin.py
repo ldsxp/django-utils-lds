@@ -21,6 +21,9 @@ from django.db.models import Sum
 from djlds.model import ModelFields
 
 
+# https://docs.djangoproject.com/zh-hans/4.2/ref/contrib/admin/actions/
+
+
 class ExportCsvMixin:
     """
     导出 CSV 格式文件的动作
@@ -38,6 +41,21 @@ class ExportCsvMixin:
     # 添加到动作
     actions = ['export_as_csv', 'export_all_as_csv', ]
     """
+
+    # def get_actions(self, request):
+    #     # 这个可以用来直接添加到动作中，但是有两个问题
+    #     # 1 这个要在类继承的最前面
+    #     # 2 self.export_as_csv 需要三个参数 modeladmin, request, queryset
+    #     actions = super().get_actions(request)
+    #     # print(actions)
+    #     # 添加自定义动作到动作列表
+    #     actions['copy_data_to_target_database'] = (
+    #         self.export_as_csv,
+    #         'copy_data_to_target_database',
+    #         '导出所选的 %(verbose_name_plural)s 为csv文件',
+    #     )
+    #
+    #     return actions
 
     def export_as_csv(self, request, queryset, is_all=False):
         if getattr(self, 'using', None):
