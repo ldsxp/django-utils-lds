@@ -60,6 +60,7 @@ class BaseImportExcel:
         """
         初始化处理字段内容
         """
+        # super().init_parsing_field()
         parsing_field = {
             'IntegerField': self.parsing_integer,
             'FloatField': self.parsing_float,
