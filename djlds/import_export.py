@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.9
+#   版本：0.10
 #   作者：lds
-#   日期：2022-06-28
+#   日期：2023-09-21
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -106,6 +106,8 @@ class BaseImportExcel:
             v = data[field]
             if not v:
                 del data[field]
+            elif '/' in v:
+                data[field] = v.replace('/', '-')
 
     def parsing_boolean(self, field, data):
         """
@@ -136,6 +138,20 @@ class BaseImportExcel:
         """
         初始化标题
         """
+        # # 第一行不是标题的例子
+        # max_row = 20
+        # for i, row in enumerate(datasets):
+        #     # print(i, row)
+        #     # 检查是否包含指定内容
+        #     if "账号昵称（必填）" in row and "发布链接（必填）" in row:
+        #         self.titles = row
+        #         break
+        #     if i >= max_row:
+        #         break
+        # 
+        # if not self.titles:
+        #     return None
+
         self.titles = next(datasets)
         ret = self.table.set_title(self.titles, exclude=self.exclude, **self.revised)
         # print('set_title', self.titles, self.exclude, self.revised)
@@ -162,6 +178,14 @@ class BaseImportExcel:
             fun(field, data)
         return data
 
+    def ignore_import(self, kwargs):
+        """
+        根据条件来判断是否忽略导入
+        """
+        # print(kwargs)
+        if not any(kwargs.values()):
+            return True
+
     def import_data(self, datasets):
         """
         导入数据
@@ -172,12 +196,12 @@ class BaseImportExcel:
         for i, data in enumerate(datasets):
             # print(data)
             kwargs = self.table.get_model_data(data)
-            kwargs.update(self.model_kwargs)
-
-            if not any(kwargs.values()):
+            if self.ignore_import(kwargs):
                 if self.debug:
                     print('跳过行', data)
                 continue
+
+            kwargs.update(self.model_kwargs)
 
             kwargs = self.handle_data(kwargs)
 
@@ -241,7 +265,7 @@ class BaseImportExcel:
         while 1:
 
             # 跳过结算数据导入
-            if self.read.title in exclude_sheet:
+            if self.read.title in exclude_sheet or not self.titles:
                 if self.debug:
                     print(f'跳过导入 {self.read.title}')
                 self.info.append(f'跳过导入 {self.read.title}')
@@ -254,6 +278,7 @@ class BaseImportExcel:
                     break
                 datasets = self.read.values()
                 self.load_list = []
+                self.titles = None
             else:
                 break
 
