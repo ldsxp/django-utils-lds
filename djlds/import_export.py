@@ -1,8 +1,8 @@
 # ---------------------------------------
 #   程序：import_export.py
-#   版本：0.10
+#   版本：0.11
 #   作者：lds
-#   日期：2023-09-21
+#   日期：2023-09-22
 #   语言：Python 3.X
 #   说明：django 导入和导出
 # ---------------------------------------
@@ -48,6 +48,7 @@ class BaseImportExcel:
         self.is_multiple_sheet = False
 
         self.count = 0
+        self.count_all = 0
         self.load_list = []
         self.adding_data = {}  # 需要附加数据的时候使用
         self.model_kwargs = {}  # 创建数据的时候添加公用数据
@@ -164,6 +165,14 @@ class BaseImportExcel:
             print(self.table.table_fields)
             print(self.table.index_list)
 
+    def init(self):
+        """
+        多表导入的时候，初始化数据
+        """
+        self.count = 0
+        self.titles = None
+        self.load_list = []
+
     def init_handle(self):
         """
         初始化处理数据需要的前置内容
@@ -214,6 +223,7 @@ class BaseImportExcel:
             self.count += len(self.model.objects.bulk_create(self.load_list))
 
         self.info.append(f'{self.read.title} 导入 {self.count} 行')
+        self.count_all += self.count
 
         return self.info
 
@@ -284,12 +294,15 @@ class BaseImportExcel:
                 if self.read.next_sheet() is None:
                     break
                 datasets = self.read.values()
-                self.load_list = []
-                self.titles = None
+                self.init()
             else:
                 break
 
         self.time_cost = time.time() - start_time
+
+        info = f'总共导入 {self.count_all} 条数据'
+        print(info)
+        self.info.append(info)
 
         self.end_import()
 
