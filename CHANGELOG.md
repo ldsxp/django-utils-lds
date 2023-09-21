@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.9.21-2] - 2023-09-21
+### Fixed
+- import_export.BaseImportExcel 修复导入错误
+
 ## [2023.9.21] - 2023-09-21
 ### Changed
 - import_export.BaseImportExcel 处理日期格式、添加标题不在第一行的例子

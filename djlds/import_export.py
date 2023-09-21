@@ -198,7 +198,7 @@ class BaseImportExcel:
             kwargs = self.table.get_model_data(data)
             if self.ignore_import(kwargs):
                 if self.debug:
-                    print('跳过行', data)
+                    print(f'跳过行 {i}：{data}')
                 continue
 
             kwargs.update(self.model_kwargs)
@@ -213,7 +213,7 @@ class BaseImportExcel:
         if not self.debug:
             self.count += len(self.model.objects.bulk_create(self.load_list))
 
-        self.info.append(f'导入 {self.count} 行')
+        self.info.append(f'{self.read.title} 导入 {self.count} 行')
 
         return self.info
 
@@ -265,13 +265,20 @@ class BaseImportExcel:
         while 1:
 
             # 跳过结算数据导入
-            if self.read.title in exclude_sheet or not self.titles:
+            if self.read.title in exclude_sheet:
+                info = f'排除导入 {self.read.title}'
                 if self.debug:
-                    print(f'跳过导入 {self.read.title}')
-                self.info.append(f'跳过导入 {self.read.title}')
+                    print(info)
+                self.info.append(info)
             else:
                 self.init_title(datasets)
-                self.import_data(datasets)
+                if self.titles:
+                    self.import_data(datasets)
+                else:
+                    info = f'跳过导入“{self.read.title}”，没有找到标题'
+                    if self.debug:
+                        print(info)
+                    self.info.append(info)
 
             if self.is_multiple_sheet:
                 if self.read.next_sheet() is None:
