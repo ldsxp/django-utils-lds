@@ -229,28 +229,18 @@ class BaseImportExcel:
         return self.info
 
     def append(self, data, original_data):
+        # super().append(data, original_data)
         if self.debug:
             self.model.objects.create(**data)
             self.count += 1
         else:
             self.load_list.append(self.model(**data))
 
-    @transaction.atomic
-    def start(self, file, exclude_sheet=None, *args, **kwargs):
+    def read_file(self, file, *args, **kwargs):
         """
-        开始导入数据
-        @param file:
-        @param exclude_sheet: 忽略导入的表
-        @return:
+        读取文件
         """
-
         self.file = Path(file)
-
-        start_time = time.time()
-
-        if exclude_sheet is None:
-            exclude_sheet = []
-
         suffix = self.file.suffix.lower()
         if suffix == '.xlsx':
             self.read = ReadXlsx(file, *args, **kwargs)
@@ -273,8 +263,25 @@ class BaseImportExcel:
         else:
             raise ValueError(f'导入 {file} 失败， 不支持导入 {suffix[1:]} 格式')
 
-        while 1:
+        return datasets
 
+    @transaction.atomic
+    def start(self, file, exclude_sheet=None, *args, **kwargs):
+        """
+        开始导入数据
+        @param file:
+        @param exclude_sheet: 忽略导入的表
+        @return:
+        """
+
+        start_time = time.time()
+
+        if exclude_sheet is None:
+            exclude_sheet = []
+
+        datasets = self.read_file(file, *args, **kwargs)
+
+        while 1:
             # 跳过结算数据导入
             if self.read.title in exclude_sheet:
                 info = f'排除导入 {self.read.title}'
