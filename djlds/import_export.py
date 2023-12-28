@@ -65,6 +65,7 @@ class BaseImportExcel:
             'IntegerField': self.parsing_integer,
             'FloatField': self.parsing_float,
             'DateField': self.parsing_date,
+            'DateTimeField': self.parsing_date_time,
             'BooleanField': self.parsing_boolean,
         }
         for data in self.table.iter('field', 'type'):
@@ -103,6 +104,17 @@ class BaseImportExcel:
     def parsing_date(self, field, data):
         """
         解析日期字段
+        """
+        if field in data:
+            v = data[field]
+            if not v:
+                del data[field]
+            elif '/' in v:
+                data[field] = v.replace('/', '-')
+
+    def parsing_date_time(self, field, data):
+        """
+        解析时间字段
         """
         if field in data:
             v = data[field]

@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.12.28-2] - 2023-12-28
+### Changed
+- import_export.BaseImportExcel 导入文件的时候支持解析DateTimeField
+
 ## [2023.12.28] - 2023-12-28
 ### Changed
 - import_export.BaseImportExcel 导入文件的时候优先使用别名
