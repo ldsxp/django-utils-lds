@@ -277,6 +277,9 @@ class TableData(ModelFields):
             if name in exclude:
                 self.exclude_info.append(name)
                 continue
+            # 优先使用别名
+            if name in kwargs:
+                name = kwargs[name]
             field = self.verbose_to_field(name)
             if field:
                 # print(field)
@@ -285,10 +288,6 @@ class TableData(ModelFields):
                 else:
                     index_list.append(i)
                     table_fields.append(field)
-            elif name in kwargs and self.verbose_to_field(kwargs[name]):
-                # print(self.verbose_to_field(kwargs[name]))
-                index_list.append(i)
-                table_fields.append(self.verbose_to_field(kwargs[name]))
             else:
                 cannot_import.append({'Column': xl_col_to_name(i), 'Name': name})
 

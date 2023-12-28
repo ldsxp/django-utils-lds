@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2023.12.28] - 2023-12-28
+### Changed
+- import_export.BaseImportExcel 导入文件的时候优先使用别名
+
 ## [2023.9.22-2] - 2023-09-22
 ### Changed
 - import_export.BaseImportExcel 把读取文件单独做成一个方法
