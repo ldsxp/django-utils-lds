@@ -253,7 +253,7 @@ class TableData(ModelFields):
         self.exclude_info = []
         self.duplicate_info = {}
 
-    def set_title(self, row, exclude=None, **kwargs):
+    def set_title(self, row, exclude=None, is_skip_blank=True, **kwargs):
         """
         设置标题行内容
 
@@ -261,6 +261,7 @@ class TableData(ModelFields):
 
         :param row: 标题行内容
         :param exclude: 排除的内容
+        :param is_skip_blank: 跳过空白标题
         :param kwargs: 用来修正数据，数据库的表述和列表标题不同的时候使用
         :return:
         """
@@ -276,6 +277,9 @@ class TableData(ModelFields):
         for i, name in enumerate(row):
             if name in exclude:
                 self.exclude_info.append(name)
+                continue
+            # 跳过空白标题
+            if is_skip_blank and not name.strip():
                 continue
             # 优先使用别名
             if name in kwargs:

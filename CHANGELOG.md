@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2024.1.15] - 2024-01-15
+### Changed
+- model.TableData 导入文件的时候，跳过空白标题
+
 ## [2023.12.28-2] - 2023-12-28
 ### Changed
 - import_export.BaseImportExcel 导入文件的时候支持解析DateTimeField
