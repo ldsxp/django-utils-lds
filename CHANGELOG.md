@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.0.0] - 2024-07-18
+### Changed
+- 重命名版本号为 X.X.X
+
 ## [2024.1.15] - 2024-01-15
 ### Changed
 - model.TableData 导入文件的时候，跳过空白标题
