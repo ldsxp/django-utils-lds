@@ -162,7 +162,7 @@ class BaseImportExcel:
         #         break
         #     if i >= max_row:
         #         break
-        # 
+        #
         # if not self.titles:
         #     return None
 
@@ -230,7 +230,7 @@ class BaseImportExcel:
             try:
                 self.append(kwargs, data)
             except Exception as e:
-                raise ValueError(f"i:{i} 错误: {e}\ntitles: {self.titles}\nkwargs: {data} ")
+                raise ValueError(f"i:{i} 错误: {e}\ntitles: {self.titles}\ndata: {data}\nkwargs: {kwargs}")
 
         if not self.debug:
             self.count += len(self.model.objects.bulk_create(self.load_list))
