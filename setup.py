@@ -3,7 +3,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-version = '1.0.0'
+from djlds.versions import version
 
 """
 pip install -U spider-utils
