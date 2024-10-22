@@ -16,7 +16,9 @@ CONFIG = {
 }
 
 
-def run_command(command, capture_output=False):
+def run_command(command, capture_output=False, show_command=True):
+    if show_command:
+        print(f'运行命令：{command}')
     result = subprocess.run(command, shell=True, text=True, capture_output=capture_output)
     if capture_output:
         return result.stdout.strip() if result.returncode == 0 else None
@@ -25,8 +27,8 @@ def run_command(command, capture_output=False):
 
 class DjangoTool:
 
-    def __init__(self):
-        self.config = CONFIG
+    def __init__(self, config):
+        self.config = config
         self.working_dir = os.getcwd()
         self.python = os.path.join(self.config['SCRIPTS_PATH'], 'python.exe')
         self.actions = {
@@ -85,13 +87,16 @@ class DjangoTool:
             sys.exit(1)
 
     def get_version_info(self):
-        python_version = run_command(f"{self.python} --version", capture_output=True)
-        django_version = run_command(f"{self.python} -m django --version", capture_output=True)
+        python_version = run_command(f"{self.python} --version", capture_output=True, show_command=False)
+        django_version = run_command(f"{self.python} -m django --version", capture_output=True, show_command=False)
         return python_version, django_version
 
     def print_menu(self):
         self.clear_screen()
-        print(f"   Django Tool {VERSION} - {self.config['SCRIPTS_PATH']}\\activate.bat")
+        print('')
+        print(f"  Django Tool {VERSION}")
+        print(f"  使用环境：{self.config['SCRIPTS_PATH']}\\activate.bat")
+        print(f"  工作目录：{self.working_dir}")
         print("\n   选项   菜单\n")
         print("   [r]    启动服务器")
         print("   [s]    创建应用程序")
@@ -263,15 +268,14 @@ class DjangoTool:
         self.menu()
 
 
-def main(config=None):
-    dt = DjangoTool()
-    if config is not None:
-        check_config = [key for key in CONFIG.keys() if key not in config]
-        if check_config:
-            raise ValueError(f'config中缺少设置内容:{check_config}')
-        dt.config = config
+def main(config):
+    check_config = [key for key in CONFIG.keys() if key not in config]
+    if check_config:
+        raise ValueError(f'config 中缺少设置内容:{check_config}')
+    dt = DjangoTool(config)
+
     dt.run()
 
 
 if __name__ == "__main__":
-    main(config=None)
+    main(config=CONFIG)
