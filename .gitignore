@@ -9,6 +9,7 @@ _build/
 __pycache__/
 # setup.py egg_info
 *.egg-info
+*.log
 build/
 dist/
 # emacs backup files
