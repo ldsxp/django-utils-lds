@@ -274,6 +274,8 @@ class TableData(ModelFields):
         for i, name in enumerate(row):
             if name in exclude:
                 self.exclude_fields.append(name)
+                if self.additional_field_name:
+                    self.additional_fields.append(name)
                 continue
             # 跳过空白标题
             if is_skip_blank and not name.strip():
@@ -286,6 +288,8 @@ class TableData(ModelFields):
                 # print(field)
                 if name in exclude:
                     self.exclude_fields.append(name)
+                    if self.additional_field_name:
+                        self.additional_fields.append(name)
                 else:
                     index_list.append(i)
                     table_fields.append(field)
