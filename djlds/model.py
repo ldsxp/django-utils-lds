@@ -244,6 +244,7 @@ class TableData(ModelFields):
         # Excel列数据对应数据库的字段名
         self.table_fields = None
         self.duplicate_info = {}
+        self.fields = []
         self.exclude_fields = []
         self.additional_fields = []
         self.additional_field_name = None  # 存储不在模型中的附加字段，一般会使用 additional_data，为 None 的时候不保存附加内容
@@ -268,6 +269,7 @@ class TableData(ModelFields):
         index_list = []
         table_fields = []
         cannot_import = []
+        self.fields = []
         self.exclude_fields = []
         self.duplicate_info = {}
         self.additional_fields = []
@@ -293,6 +295,7 @@ class TableData(ModelFields):
                 else:
                     index_list.append(i)
                     table_fields.append(field)
+                    self.fields.append(name)
             elif self.additional_field_name:
                 self.additional_fields.append(name)
             else:
@@ -309,10 +312,10 @@ class TableData(ModelFields):
             for i, field in enumerate(self.table_fields):
                 if field in check_duplicates:
                     if field not in self.duplicate_info:
-                        self.duplicate_info[field] = [{'Column': xl_col_to_name(check_duplicates[field]),
-                                                       'Name': self.title[check_duplicates[field]]}]
+                        self.duplicate_info[field] = [{'column': xl_col_to_name(check_duplicates[field]),
+                                                       'name': self.title[check_duplicates[field]]}]
                     self.duplicate_info[field].append(
-                        {'Column': xl_col_to_name(self.index_list[i]), 'Name': self.title[self.index_list[i]]})
+                        {'column': xl_col_to_name(self.index_list[i]), 'name': self.title[self.index_list[i]]})
                 else:
                     check_duplicates[field] = self.index_list[i]
 
