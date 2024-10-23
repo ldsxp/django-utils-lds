@@ -226,10 +226,10 @@ class TableData(ModelFields):
     # 例子
     table = TableData(models)
     alias = {'替换内容1':'替换为1', '替换内容2':'替换为2'}
-    r = table.set_title(headers, **alias)
+    cannot_import = table.set_title(headers, **alias)
     print(table.exclude_info)
     if r:
-        cannot_import_dict = {d['name']: '' for d in r}
+        cannot_import_dict = {d['name']: '' for d in cannot_import}
         print(f"不能导入的字段：{cannot_import_dict}")
         raise ValueError(f'字段没有导入：{r}')
     # print(r, table.table_fields, table.index_list)
@@ -243,8 +243,9 @@ class TableData(ModelFields):
         self.index_list = None
         # Excel列数据对应数据库的字段名
         self.table_fields = None
-        self.exclude_info = []
         self.duplicate_info = {}
+        self.exclude_fields = []
+        self.additional_fields = []
         self.additional_field_name = None  # 存储不在模型中的附加字段，一般会使用 additional_data，为 None 的时候不保存附加内容
 
     def set_title(self, row, exclude=None, is_skip_blank=True, **kwargs):
@@ -267,10 +268,12 @@ class TableData(ModelFields):
         index_list = []
         table_fields = []
         cannot_import = []
-        self.exclude_info = []
+        self.exclude_fields = []
+        self.duplicate_info = {}
+        self.additional_fields = []
         for i, name in enumerate(row):
             if name in exclude:
-                self.exclude_info.append(name)
+                self.exclude_fields.append(name)
                 continue
             # 跳过空白标题
             if is_skip_blank and not name.strip():
@@ -282,11 +285,13 @@ class TableData(ModelFields):
             if field:
                 # print(field)
                 if name in exclude:
-                    self.exclude_info.append(name)
+                    self.exclude_fields.append(name)
                 else:
                     index_list.append(i)
                     table_fields.append(field)
-            elif not self.additional_field_name:
+            elif self.additional_field_name:
+                self.additional_fields.append(name)
+            else:
                 cannot_import.append({'column': xl_col_to_name(i), 'name': name})
 
         self.title = row
