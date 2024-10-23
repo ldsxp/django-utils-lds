@@ -1,12 +1,3 @@
-# ---------------------------------------
-#   程序：model.py
-#   版本：0.13
-#   作者：lds
-#   日期：2022-05-23
-#   语言：Python 3.X
-#   说明：django 模型相关的函数
-# ---------------------------------------
-
 import operator
 import os
 from functools import reduce
@@ -228,16 +219,18 @@ class ModelFields:
 
 class TableData(ModelFields):
     """
-    转换 Eccel 数据为 Django 模型数据
+    转换 Excel 数据为 Django 模型数据
 
-    我们继承自 ModelFields ，所以可以使用它所有的功能
+    我们继承自 ModelFields，所以可以使用其所有功能
 
     # 例子
     table = TableData(models)
-    xiuzheng = {'替换内容1':'替换为1', '替换内容2':'替换为2'}
-    r = table.set_title(self.headers_title, **xiuzheng)
+    alias = {'替换内容1':'替换为1', '替换内容2':'替换为2'}
+    r = table.set_title(headers, **alias)
     print(table.exclude_info)
     if r:
+        cannot_import_dict = {d['name']: '' for d in r}
+        print(f"不能导入的字段：{cannot_import_dict}")
         raise ValueError(f'字段没有导入：{r}')
     # print(r, table.table_fields, table.index_list)
     """
@@ -252,21 +245,22 @@ class TableData(ModelFields):
         self.table_fields = None
         self.exclude_info = []
         self.duplicate_info = {}
+        self.additional_field_name = None  # 存储不在模型中的附加字段，一般会使用 additional_data，为 None 的时候不保存附加内容
 
     def set_title(self, row, exclude=None, is_skip_blank=True, **kwargs):
         """
         设置标题行内容
 
-        我们通过标题行对应的列索引获取数据
+        通过标题行对应的列索引获取数据
 
         :param row: 标题行内容
-        :param exclude: 排除的内容
-        :param is_skip_blank: 跳过空白标题
+        :param exclude: 要排除的内容
+        :param is_skip_blank: 是否跳过空白标题
         :param kwargs: 用来修正数据，数据库的表述和列表标题不同的时候使用
-        :return:
+        :return: 不能导入的字段
         """
         if not isinstance(row, list):
-            raise ValueError('Excel行是列表类型！')
+            raise ValueError('Excel行必须是列表类型！')
         if exclude is None:
             exclude = []
 
@@ -292,8 +286,8 @@ class TableData(ModelFields):
                 else:
                     index_list.append(i)
                     table_fields.append(field)
-            else:
-                cannot_import.append({'Column': xl_col_to_name(i), 'Name': name})
+            elif not self.additional_field_name:
+                cannot_import.append({'column': xl_col_to_name(i), 'name': name})
 
         self.title = row
         self.index_list = index_list
@@ -322,7 +316,14 @@ class TableData(ModelFields):
         :param row: Excel行
         :return: model_dict
         """
-        return {field: row[self.index_list[i]] for i, field in enumerate(self.table_fields)}
+        # 构建模型字段的字典
+        model_dict = {field: row[self.index_list[i]] for i, field in enumerate(self.table_fields)}
+
+        if self.additional_field_name:
+            # 获取不在模型中的附加字段
+            model_dict[self.additional_field_name] = {self.title[i]: row[i] for i in range(len(row)) if i not in self.index_list}
+
+        return model_dict
 
     def get_model_data(self, row):
         """

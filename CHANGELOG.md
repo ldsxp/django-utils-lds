@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.0] - 2024-10-23
+### Added
+- TableData 支持保存附加字段
+
 ## [1.2.0] - 2024-10-22
 ### Changed
 - 修复 DjangoTool 使用变量没有正确设置的错误
