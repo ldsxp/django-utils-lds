@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.2] - 2024-10-23
+### Changed
+- TableData 排除的字段也添加到附加内容
+
 ## [1.3.1] - 2024-10-23
 ### Changed
 - 优化 TableData 的导入标题信息
