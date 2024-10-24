@@ -91,7 +91,7 @@ setup(
         'ilds',
         'colorama',
         'django-admin-generator>=2.6.0',
-        'Django>=2.2',
+        'Django',
     ],
     include_package_data=True,
     extras_require={'dev': ['wheel', 'twine', ]},
