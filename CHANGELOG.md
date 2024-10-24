@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.6] - 2024-10-24
+### Fixed
+- TableData 不要修改 fields ，会影响我们获取 Django 的字段
+
 ## [1.3.5] - 2024-10-24
 ### Changed
 - 取消django版本限制
