@@ -4,6 +4,12 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.5] - 2024-10-24
+### Changed
+- 取消django版本限制
+- 清理ilds中存在的代码
+- 删除重复代码
+
 ## [1.3.4] - 2024-10-24
 ### Changed
 - 添加 djt.py 示例
