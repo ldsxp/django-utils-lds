@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.4] - 2024-10-24
+### Changed
+- 添加 djt.py 示例
+
 ## [1.3.3] - 2024-10-23
 ### Changed
 - TableData 添加 fields 保存导入的标题名

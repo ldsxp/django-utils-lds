@@ -1,1 +1,1 @@
-from .django_tool import *
+from .django_tool import main

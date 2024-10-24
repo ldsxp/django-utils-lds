@@ -3,7 +3,7 @@ import sys
 import subprocess
 from importlib import import_module
 
-VERSION = '3.0'
+VERSION = '3.1'
 
 CONFIG = {
     'USERNAME': os.getenv('USERNAME', 'lds'),
@@ -278,4 +278,46 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main(config=CONFIG)
+    main(CONFIG)
+
+# 下面是 djt.py 示例：
+"""
+import os
+import sys
+import subprocess
+
+CONFIG = {
+    'USERNAME': os.getenv('USERNAME', 'lds'),
+    'EMAIL': os.getenv('EMAIL', '85176878@qq.com'),
+    'SCRIPTS_PATH': os.getenv('SCRIPTS_PATH', r'D:\Envs\lds_mysite_310\Scripts'),
+    'BACKUP_DIR': 'backup',
+    'DJANGO_SETTINGS_MODULE': os.getenv('DJANGO_SETTINGS_MODULE', 'mysite.settings'),
+    'SERVER_ADDRESS': '127.0.0.1',
+    'SERVER_PORT': '8100'
+}
+
+
+def execute_script_with_alternative_python(required_python_path):
+    required_python_executable = os.path.join(required_python_path, 'python.exe')
+    if os.path.normcase(os.path.normpath(required_python_executable)) != os.path.normcase(os.path.normpath(sys.executable)):
+        print(f"当前 Python 路径“{sys.executable}”与所需路径“{required_python_executable}”不同")
+        print(f"切换到 Python: {required_python_executable}")
+        subprocess.run([required_python_executable, sys.argv[0]], check=True)
+        sys.exit()
+
+
+def main():
+    # 确保使用正确的 Python 路径
+    execute_script_with_alternative_python(CONFIG['SCRIPTS_PATH'])
+    from djlds.tool import main as djlds_main
+    djlds_main(CONFIG)
+
+
+if __name__ == "__main__":
+
+    try:
+        main()
+    except Exception as e:
+        print(f"运行错误: {e}")
+        input('输入任意字符退出...')
+"""
