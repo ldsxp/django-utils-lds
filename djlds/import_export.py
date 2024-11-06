@@ -291,9 +291,13 @@ class BaseImportExcel:
         if exclude_sheet is None:
             exclude_sheet = []
 
-        datasets = self.read_file(file, *args, **kwargs)
+        for sheet_name in self.read.sheet_names:
+            print('sheet_name', sheet_name)
+            self.read.set_sheet(sheet_name)
 
-        while 1:
+            datasets = self.read.values()
+            self.init()
+
             # 跳过结算数据导入
             if self.read.title in exclude_sheet:
                 info = f'排除导入 {self.read.title}'
@@ -310,12 +314,7 @@ class BaseImportExcel:
                         print(info)
                     self.info.append(info)
 
-            if self.is_multiple_sheet:
-                if self.read.next_sheet() is None:
-                    break
-                datasets = self.read.values()
-                self.init()
-            else:
+            if not self.is_multiple_sheet:
                 break
 
         self.time_cost = time.time() - start_time

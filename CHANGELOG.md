@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.7] - 2024-11-06
+### Fixed
+- 修复多表导入错误
+
 ## [1.3.6] - 2024-10-24
 ### Fixed
 - TableData 不要修改 fields ，会影响我们获取 Django 的字段
