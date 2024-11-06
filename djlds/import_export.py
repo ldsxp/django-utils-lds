@@ -256,10 +256,10 @@ class BaseImportExcel:
         suffix = self.file.suffix.lower()
         if suffix == '.xlsx':
             self.read = ReadXlsx(file, *args, **kwargs)
-            datasets = self.read.values()
+            datasets = None
         elif suffix == '.xls':
             self.read = ReadXls(file, *args, **kwargs)
-            datasets = self.read.values()
+            datasets = None
         elif suffix == '.csv':
             if 'encoding' in kwargs:
                 encoding = kwargs.pop('encoding')
@@ -291,12 +291,14 @@ class BaseImportExcel:
         if exclude_sheet is None:
             exclude_sheet = []
 
+        datasets = self.read_file(file, *args, **kwargs)
+
         for sheet_name in self.read.sheet_names:
             print('sheet_name', sheet_name)
             self.read.set_sheet(sheet_name)
 
-            datasets = self.read.values()
-            self.init()
+            if datasets is None:
+                datasets = self.read.values()
 
             # 跳过结算数据导入
             if self.read.title in exclude_sheet:
@@ -316,6 +318,8 @@ class BaseImportExcel:
 
             if not self.is_multiple_sheet:
                 break
+
+            self.init()
 
         self.time_cost = time.time() - start_time
 
