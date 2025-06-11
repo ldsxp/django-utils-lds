@@ -4,6 +4,10 @@
 
 此项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.10]
+### Fixed
+- 修复confirm_yes_no错误
+
 ## [1.3.9]
 ### Fixed
 - 修复导入的时候变量修改发生的错误

@@ -623,7 +623,7 @@ def confirm_db(db_name=None, is_sqlite3=True, db_name_list=None, title='确认�
             print(f'{Fore.MAGENTA}{message}({name}){Style.RESET_ALL}')
             return
     except ModuleNotFoundError:
-        from djlds.util import confirm_yes_no
+        from ilds.cmd import confirm_yes_no
         if confirm_yes_no(title=title, text=f'正在修改数据库({name})，是否继续？\n输入 y 确认，其他任意字符表示取消'):
             print(f'{Fore.MAGENTA}{message}({name}){Style.RESET_ALL}')
             return
