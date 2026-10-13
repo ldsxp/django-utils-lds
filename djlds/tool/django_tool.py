@@ -289,7 +289,7 @@ import subprocess
 CONFIG = {
     'USERNAME': os.getenv('USERNAME', 'lds'),
     'EMAIL': os.getenv('EMAIL', '85176878@qq.com'),
-    'SCRIPTS_PATH': os.getenv('SCRIPTS_PATH', r'D:\Envs\lds_mysite_310\Scripts'),
+    'SCRIPTS_PATH': os.getenv('SCRIPTS_PATH', r'.venv\Scripts'),
     'BACKUP_DIR': 'backup',
     'DJANGO_SETTINGS_MODULE': os.getenv('DJANGO_SETTINGS_MODULE', 'mysite.settings'),
     'SERVER_ADDRESS': '127.0.0.1',
